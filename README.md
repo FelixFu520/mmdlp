@@ -1,2 +1,1 @@
-# FF
-Deep learning library based on openmmlab
+# Deep learning library based on openmmlab
