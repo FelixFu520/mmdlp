@@ -51,7 +51,7 @@ LOOPS = Registry(
 HOOKS = Registry(
     'hook', 
     parent=MMENGINE_HOOKS, 
-    scope=['mmdlp'])
+    scope='mmdlp')
 
 # manage data-related modules
 DATASETS = Registry(
