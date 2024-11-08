@@ -1,6 +1,6 @@
 ## run
 导出onnx, 并使用horizon的PTQ量化过程
-1~2 需要在有mm系列的环境下执行, 3~7 需要在有OE的环境上运行 
+1~2 需要在有mm系列的环境下执行, 3~6 需要在有OE的环境上运行, 7是两个环境都需要使用
 ```
 # 1. 导出onnx
 PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/configs/stdc_horizon/export.py
@@ -22,7 +22,7 @@ PYTHONPATH=/home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc python /home/us
 
 # 7. 验证pth, 原始onnx, 量化onnx的指标
 # pth验证(需要在mm系列的环境上跑)
-PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc/eval.py /home/users/fa.fu/work/mmdlp/configs/stdc_horizon/config_from_mmseg/stdc/stdc1_in1k-pre_4xb12-80k_cityscapes-512x1024.py --work-dir /home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_1024×2048/eval
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc/eval_pth.py /home/users/fa.fu/work/mmdlp/configs/stdc_horizon/config_from_mmseg/stdc/stdc1_in1k-pre_4xb12-80k_cityscapes-512x1024.py --work-dir /home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_1024×2048/eval_pth
 
 # 
 
