@@ -42,7 +42,7 @@ def infer_quant_onnx(onnx_model_path: str, image_path: str, result_dir: str = ".
 
 
 if __name__ == "__main__":
-    onnx_model_path = "/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_1024×2048/output-stdc1_pre_1024×2048/stdc1_pre_1024×2048_quantized_model.onnx"
+    onnx_model_path = "/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_1024×2048/output-stdc1_pre_1024×2048_jj/stdc1_pre_1024×2048_jj_quantized_model.onnx"
     image_path = "/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_1024×2048/demo_images/krefeld_000000_012353_leftImg8bit.png"
     result_dir = "/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_1024×2048/result"
     os.makedirs(result_dir, exist_ok=True)

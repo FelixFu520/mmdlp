@@ -139,9 +139,9 @@ if __name__ == "__main__":
     
     # 使用float模型进行推理
     onnx_float_path = "/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_1024×2048/STDC1_pre.onnx"
-    onnx_quant_path = "/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_1024×2048/output-stdc1_pre_1024×2048/stdc1_pre_1024×2048_quantized_model.onnx"
+    onnx_quant_path = "/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_1024×2048/output-stdc1_pre_1024×2048_jj/stdc1_pre_1024×2048_jj_quantized_model.onnx"
     save_dir_float = "/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_1024×2048/eval_float_output2"
-    save_dir_quant = "/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_1024×2048/eval_quant_output2"
+    save_dir_quant = "/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_1024×2048/eval_quant_output3"
     
     print("start evaluating...")
     

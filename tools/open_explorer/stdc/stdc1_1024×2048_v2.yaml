@@ -1,0 +1,38 @@
+model_parameters:
+  onnx_model: '/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_1024×2048/STDC1_pre.onnx'
+  march: 'bayes-e'
+  output_model_file_prefix: 'stdc1_pre_1024×2048_jj'
+  working_dir: '/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_1024×2048/output-stdc1_pre_1024×2048_jj'
+  remove_node_type: 'Quantize;Dequantize;Transpose;Cast;Reshape'
+  layer_out_dump: False
+  # debug_mode: "dump_calibration_data" 
+  node_info: {
+  
+ }
+ 
+input_parameters:
+  input_name: 'input'
+  input_type_train: 'rgb'
+  input_layout_train: 'NCHW'
+  input_shape: '1x3x1024x2048'
+  input_batch: 1
+  norm_type: 'data_mean_and_scale'
+  mean_value: '123.675 116.28 103.53'
+  scale_value: "0.017"
+  input_layout_rt: 'NHWC'
+  input_type_rt: 'nv12'
+
+# 校准参数组
+calibration_parameters:
+  cal_data_dir: '/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_1024×2048/calibration_data_rgb_f32_1024_2048'
+  cal_data_type: 'float32'
+  preprocess_on: False
+  # 校准使用的算法类型 default
+  calibration_type: 'default'
+  
+
+compiler_parameters:
+  compile_mode: 'latency'
+  debug: False
+  optimize_level: 'O3'
+  jobs: 32

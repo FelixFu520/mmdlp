@@ -236,7 +236,7 @@ if __name__ == "__main__":
     test_mIoU(float_model_outputs, datasets_dir, float_output_dir, plot=False)
 
     print(f"Quant onnx 指标")
-    qaunt_model_outputs = "/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_1024×2048/eval_quant_output2"
+    qaunt_model_outputs = "/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_1024×2048/eval_quant_output3"
     quant_output_dir = "/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_1024×2048/eval_metrics_output_quant"
     test_mIoU(qaunt_model_outputs, datasets_dir, quant_output_dir, plot=False)
 
