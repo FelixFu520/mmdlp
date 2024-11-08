@@ -1,3 +1,10 @@
+# custom
+.DS_Store
+.vscode/
+.idea/
+output/
+pths/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -1,0 +1,25 @@
+## run
+导出onnx, 并使用horizon的PTQ量化过程
+1~2 需要在有mm系列的环境下执行, 3~7 需要在有OE的环境上运行 
+```
+# 1. 导出onnx
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/configs/stdc_horizon/export.py
+
+# 2. 从训练集或者验证集中筛选矫正数据, 最好是有代表性, 每类都来点就行
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/configs/stdc_horizon/collect_calibration_data.py
+
+# 3. 推理原始onnx, 检验是否准确
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc python /home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc/infer_original_onnx.py
+
+# 4. 准备校准数据集
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc python /home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc/gen_calibration_data.py
+
+# 5. 模型转换
+hb_mapper makertbin -c /home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc/stdc1_1024×2048_v1.yaml --model-type onnx
+
+# 6. 推理量化onnx, 与原始onnx对比
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc python /home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc/infer_quantized_onnx.py
+
+# 7. 验证pth, 原始onnx, 量化onnx的指标
+
+```
