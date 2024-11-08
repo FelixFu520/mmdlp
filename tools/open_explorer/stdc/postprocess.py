@@ -4,7 +4,6 @@ import numpy as np
 from numpy import ndarray
 import os.path as osp
 from matplotlib.figure import Figure
-from horizon_tc_ui.data.transformer import *
 
 classes = (
     "road",

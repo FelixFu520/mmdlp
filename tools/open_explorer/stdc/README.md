@@ -26,4 +26,8 @@ PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/too
 
 # float, quant onnx跑出npy结果, 然后将npy结果在mm环境上跑下指标
 PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc/eval_onnx.py
+
+# 用mm 继续推理npy, 获得指标
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc/eval_onnx_metrics.py
+TODO: 量化 mIOU 从74.94掉到 64.7, 需要找原因
 ```
