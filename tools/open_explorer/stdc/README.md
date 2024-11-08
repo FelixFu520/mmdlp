@@ -24,6 +24,6 @@ PYTHONPATH=/home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc python /home/us
 # pth验证(需要在mm系列的环境上跑)
 PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc/eval_pth.py /home/users/fa.fu/work/mmdlp/configs/stdc_horizon/config_from_mmseg/stdc/stdc1_in1k-pre_4xb12-80k_cityscapes-512x1024.py --work-dir /home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_1024×2048/eval_pth
 
-# 
-
+# float, quant onnx跑出npy结果, 然后将npy结果在mm环境上跑下指标
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc/eval_onnx.py
 ```
