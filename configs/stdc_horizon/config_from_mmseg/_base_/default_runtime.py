@@ -9,7 +9,7 @@ visualizer = dict(
     type='SegLocalVisualizer', vis_backends=vis_backends, name='visualizer')
 log_processor = dict(by_epoch=False)
 log_level = 'INFO'
-load_from = None
+load_from = '/home/users/fa.fu/work/work_dirs/stdc_horizon/stdc1_in1k-pre_512x1024_80k_cityscapes_20220224_141648-3d4c2981.pth'
 resume = False
 
 tta_model = dict(type='SegTTAModel')

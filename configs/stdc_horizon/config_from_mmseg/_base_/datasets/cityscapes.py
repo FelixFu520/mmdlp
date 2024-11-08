@@ -1,6 +1,6 @@
 # dataset settings
 dataset_type = 'CityscapesDataset'
-data_root = 'data/cityscapes/'
+data_root = '/horizon-bucket/aidi_public_data/cityscapes/origin'
 crop_size = (512, 1024)
 train_pipeline = [
     dict(type='LoadImageFromFile'),

@@ -21,5 +21,9 @@ hb_mapper makertbin -c /home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc/std
 PYTHONPATH=/home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc python /home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc/infer_quantized_onnx.py
 
 # 7. 验证pth, 原始onnx, 量化onnx的指标
+# pth验证(需要在mm系列的环境上跑)
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc/eval.py /home/users/fa.fu/work/mmdlp/configs/stdc_horizon/config_from_mmseg/stdc/stdc1_in1k-pre_4xb12-80k_cityscapes-512x1024.py --work-dir /home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_1024×2048/eval
+
+# 
 
 ```
