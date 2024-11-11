@@ -1,10 +1,11 @@
 # STDC
+```
 这个主要是客户想看下stdc的效果, 以及分割PTQ整个流程, 以后PTQ分割的所有内容可以参考此部分
 
 
 导出onnx, 并使用horizon的PTQ量化过程
 1~2 需要在有mm系列的环境下执行, 3~6 需要在有OE的环境上运行, 7是两个环境都需要使用
-```
+
 # 1. 导出onnx
 PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/configs/stdc_horizon/export.py
 
