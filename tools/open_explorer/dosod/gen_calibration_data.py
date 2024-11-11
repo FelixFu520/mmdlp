@@ -35,7 +35,7 @@ def gen_calibration_data(data_dir: str, save_dir: str, height: int = 640, width:
             transpose=True, 
             new_axis=True
         )
-        image = image / 255
+        image = image
         assert image.shape == (1, 3, height, width)
         image.tofile(os.path.join(save_dir, os.path.basename(image_path)[:-4] + ".npy"))
 
