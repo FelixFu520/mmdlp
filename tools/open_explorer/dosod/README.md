@@ -19,10 +19,11 @@ PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/too
 PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/gen_calibration_data.py
 
 # 5. 模型转换
-hb_mapper makertbin -c /home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc/stdc1_1024×2048_v1.yaml --model-type onnx
+hb_mapper makertbin -c /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/20241103/con_DOSOD_L_v1.yaml --model-type onnx
 
 # 6. 推理量化onnx, 与原始onnx对比
-PYTHONPATH=/home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc python /home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc/infer_quantized_onnx.py
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/infer_quantized_onnx.py
+
 
 # 7. 验证pth, 原始onnx, 量化onnx的指标
 # pth验证(需要在mm系列的环境上跑)
