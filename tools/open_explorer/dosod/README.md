@@ -16,7 +16,7 @@
 PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/infer_original_onnx.py
 
 # 4. 准备校准数据集
-PYTHONPATH=/home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc python /home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc/gen_calibration_data.py
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/gen_calibration_data.py
 
 # 5. 模型转换
 hb_mapper makertbin -c /home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc/stdc1_1024×2048_v1.yaml --model-type onnx
