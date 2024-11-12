@@ -14,6 +14,9 @@ MEAN=[123.675, 116.28, 103.53]
 STD=[58.395, 57.12, 57.375]
 
 SAVE_TEMP = True
+SCORES = 0.1
+IOU_THRESHOLD = 0.5
+
 
 
 def collect_val_data(datasets_dir: str):
@@ -76,7 +79,7 @@ def eval_float_onnx(onnx_float_path, image_path, save_dir, height=1024, width=20
         scores = scores.squeeze(0)
         argmax_idx = np.argmax(scores, axis=1).astype(np.int8)
         argmax_scores = scores[np.arange(scores.shape[0]), argmax_idx]
-        indexs = cv2.dnn.NMSBoxes(bboxes, argmax_scores, 0.6, 0.5)
+        indexs = cv2.dnn.NMSBoxes(bboxes, argmax_scores, SCORES, IOU_THRESHOLD)
 
         # 画图
         image = image.transpose(0, 2, 3, 1)
@@ -87,6 +90,8 @@ def eval_float_onnx(onnx_float_path, image_path, save_dir, height=1024, width=20
                         (int(bboxes[idx][2]), int(bboxes[idx][3])),
                         (0, 255, 0), 
                         2)
+            # 显示score
+            cv2.putText(image, str(argmax_scores[idx]), (int(bboxes[idx][0]), int(bboxes[idx][1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
         result_dir = os.path.join(os.path.dirname(save_dir), "eval_result_show")
         dst_path = os.path.join(result_dir, os.path.basename(image_path)[:-4]+"_result_float.png")
         os.makedirs(os.path.dirname(dst_path), exist_ok=True)
@@ -138,7 +143,7 @@ def eval_quant_onnx(onnx_quant_path, image_path, save_dir, height=1024, width=20
         scores = scores.squeeze(0)
         argmax_idx = np.argmax(scores, axis=1).astype(np.int8)
         argmax_scores = scores[np.arange(scores.shape[0]), argmax_idx]
-        indexs = cv2.dnn.NMSBoxes(bboxes, argmax_scores, 0.6, 0.5)
+        indexs = cv2.dnn.NMSBoxes(bboxes, argmax_scores, SCORES, IOU_THRESHOLD)
 
         # 画图
         image = image.transpose(1, 2, 0)
@@ -149,6 +154,8 @@ def eval_quant_onnx(onnx_quant_path, image_path, save_dir, height=1024, width=20
                         (int(bboxes[idx][2]), int(bboxes[idx][3])),
                         (0, 255, 0), 
                         2)
+            # 显示score
+            cv2.putText(image, str(argmax_scores[idx]), (int(bboxes[idx][0]), int(bboxes[idx][1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
         result_dir = os.path.join(os.path.dirname(save_dir), "eval_result_show")
         dst_path = os.path.join(result_dir, os.path.basename(image_path)[:-4]+"_result_quant.png")
         os.makedirs(os.path.dirname(dst_path), exist_ok=True)
