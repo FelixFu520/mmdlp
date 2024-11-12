@@ -24,14 +24,12 @@ hb_mapper makertbin -c /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/20
 # 6. 推理量化onnx, 与原始onnx对比
 PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/infer_quantized_onnx.py
 
-
 # 7. 验证pth, 原始onnx, 量化onnx的指标
 # pth验证(需要在mm系列的环境上跑)
-PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc/eval_pth.py /home/users/fa.fu/work/mmdlp/configs/stdc_horizon/config_from_mmseg/stdc/stdc1_in1k-pre_4xb12-80k_cityscapes-512x1024.py --work-dir /home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_1024×2048/eval_pth
+@陈世源验证, 这里略
 
 # float, quant onnx跑出npy结果, 然后将npy结果在mm环境上跑下指标
-PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc/eval_onnx.py
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx.py
 
 # 用mm 继续推理npy, 获得指标
-PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc/eval_onnx_metrics.py
-量化 mIOU 从74.94掉到 64.7, 需要找原因, 找到原因了, 是我和君君的量化方式不同, 我选择的是max, 她选择的是default
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_metrics.py
