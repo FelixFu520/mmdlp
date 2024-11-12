@@ -33,3 +33,24 @@ PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/too
 
 # 用mm 继续推理npy, 获得指标
 PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_metrics.py
+```
+
+### 实验1-修改矫正数据集
+2024.11.12, 跑完上面的内容后, 量化会掉点, 主要是score值降低1%~20%个点, 导致量化onnx检测不出来东西, 猜测是因为模型量化的不太好, 现修改量化数据集, 重新量化
+```
+# 4. 准备校准数据集
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/gen_calibration_data.py --data_dir /home/users/fa.fu/work/work_dirs/dosod/calibration_images_1112 --save_dir /home/users/fa.fu/work/work_dirs/dosod/calibration_data_rgb_1112
+
+# 5. 模型转换
+hb_mapper makertbin -c /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/20241103/con_DOSOD_L_v1_data2.yaml --model-type onnx
+
+# 7. 原始onnx, 量化onnx的指标
+# float, quant onnx跑出npy结果, 然后将npy结果在mm环境上跑下指标
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx.py --onnx_float_path /home/users/fa.fu/work/work_dirs/dosod/20241103/dosod-l_epoch_40_kxj_rep-without-nms_20241103.onnx --onnx_quant_path /home/users/fa.fu/work/work_dirs/dosod/20241103/output_data2/DOSOD_L_without_nms_v0.1_quantized_model.onnx --save_dir_float /home/users/fa.fu/work/work_dirs/dosod/20241103/eval_float2 --save_dir_quant /home/users/fa.fu/work/work_dirs/dosod/20241103/eval_quant2 --show_dir eval_result_show2
+
+# 用mm 继续推理npy, 获得指标
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_mertics.py --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/ --ann_file real_resize_coco_jpg_20241103.json --pred_npy_dir /home/users/fa.fu/work/work_dirs/dosod/20241103/eval_float2
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_mertics.py --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/ --ann_file real_resize_coco_jpg_20241103.json --pred_npy_dir /home/users/fa.fu/work/work_dirs/dosod/20241103/eval_quant2
+
+```
+结果表示改变矫正数据集后, 对掉精度没啥影响

@@ -2,6 +2,7 @@ import os
 import os.path as osp
 import numpy as np
 import cv2
+import argparse
 from tqdm import tqdm
 from concurrent.futures import ProcessPoolExecutor
 from multiprocessing import Pool
@@ -36,7 +37,7 @@ def collect_val_data_list(datasets_dir: str):
     return images_paths
 
 
-def eval_float_onnx(onnx_float_path, image_path, save_dir, height=1024, width=2048):
+def eval_float_onnx(onnx_float_path, image_path, save_dir, height=1024, width=2048, show_dir = "eval_result_show"):
     os.makedirs(save_dir, exist_ok=True)
 
     # model
@@ -92,13 +93,13 @@ def eval_float_onnx(onnx_float_path, image_path, save_dir, height=1024, width=20
                         2)
             # 显示score
             cv2.putText(image, str(argmax_scores[idx]), (int(bboxes[idx][0]), int(bboxes[idx][1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
-        result_dir = os.path.join(os.path.dirname(save_dir), "eval_result_show")
+        result_dir = os.path.join(os.path.dirname(save_dir), show_dir)
         dst_path = os.path.join(result_dir, os.path.basename(image_path)[:-4]+"_result_float.png")
         os.makedirs(os.path.dirname(dst_path), exist_ok=True)
         cv2.imwrite(dst_path, image)
 
 
-def eval_quant_onnx(onnx_quant_path, image_path, save_dir, height=1024, width=2048):
+def eval_quant_onnx(onnx_quant_path, image_path, save_dir, height=1024, width=2048, show_dir = "eval_result_show"):
     os.makedirs(save_dir, exist_ok=True)
 
     # model
@@ -156,27 +157,48 @@ def eval_quant_onnx(onnx_quant_path, image_path, save_dir, height=1024, width=20
                         2)
             # 显示score
             cv2.putText(image, str(argmax_scores[idx]), (int(bboxes[idx][0]), int(bboxes[idx][1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
-        result_dir = os.path.join(os.path.dirname(save_dir), "eval_result_show")
+        result_dir = os.path.join(os.path.dirname(save_dir), show_dir)
         dst_path = os.path.join(result_dir, os.path.basename(image_path)[:-4]+"_result_quant.png")
         os.makedirs(os.path.dirname(dst_path), exist_ok=True)
         cv2.imwrite(dst_path, image)
 
 
-def eval_all_onnx(onnx_float_path, onnx_quant_path, image_path, save_dir_float, save_dir_quant, height=1024, width=2048):
-    eval_float_onnx(onnx_float_path, image_path, save_dir_float, height=height, width=width)
-    eval_quant_onnx(onnx_quant_path, image_path, save_dir_quant, height=height, width=width)
+def eval_all_onnx(onnx_float_path, onnx_quant_path, image_path, save_dir_float, save_dir_quant, height=1024, width=2048, show_dir = "eval_result_show"):
+    eval_float_onnx(onnx_float_path, image_path, save_dir_float, height=height, width=width, show_dir=show_dir)
+    eval_quant_onnx(onnx_quant_path, image_path, save_dir_quant, height=height, width=width, show_dir=show_dir)
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Evaluate onnx model")
+    parser.add_argument("--data_dir", type=str, 
+                        default="/home/users/fa.fu/work/data/dosod_eval_dataset/real_resize_jpg_data_20241103", 
+                        help="The directory of evaluation images")
+    parser.add_argument("--onnx_float_path", type=str,
+                        default="/home/users/fa.fu/work/work_dirs/dosod/20241103/dosod-l_epoch_40_kxj_rep-without-nms_20241103.onnx",
+                        help="The path of float onnx model")
+    parser.add_argument("--onnx_quant_path", type=str,
+                        default="/home/users/fa.fu/work/work_dirs/dosod/20241103/output/DOSOD_L_without_nms_v0.1_quantized_model.onnx",
+                        help="The path of quantized onnx model")
+    parser.add_argument("--save_dir_float", type=str,
+                        default="/home/users/fa.fu/work/work_dirs/dosod/20241103/eval_float",
+                        help="The directory to save float model result")
+    parser.add_argument("--save_dir_quant", type=str,
+                        default="/home/users/fa.fu/work/work_dirs/dosod/20241103/eval_quant",
+                        help="The directory to save quantized model result")
+    parser.add_argument("--show_dir", type=str,
+                        default="eval_result_show",
+                        help="The directory to save show result")
+    args = parser.parse_args()
+
     # 所有数据迭代器
-    data_dir = "/home/users/fa.fu/work/data/dosod_eval_dataset/real_resize_jpg_data_20241103"
+    data_dir = args.data_dir
     all_val_images_path = collect_val_data_list(data_dir)
 
     
     # 使用float模型进行推理
-    onnx_float_path = "/home/users/fa.fu/work/work_dirs/dosod/20241103/dosod-l_epoch_40_kxj_rep-without-nms_20241103.onnx"
-    onnx_quant_path = "/home/users/fa.fu/work/work_dirs/dosod/20241103/output/DOSOD_L_without_nms_v0.1_quantized_model.onnx"
-    save_dir_float = "/home/users/fa.fu/work/work_dirs/dosod/20241103/eval_float"
-    save_dir_quant = "/home/users/fa.fu/work/work_dirs/dosod/20241103/eval_quant"
+    onnx_float_path = args.onnx_float_path
+    onnx_quant_path = args.onnx_quant_path
+    save_dir_float = args.save_dir_float
+    save_dir_quant = args.save_dir_quant
     
     print("start evaluating...")
     
@@ -186,4 +208,4 @@ if __name__ == "__main__":
     # 使用with语句确保进程池正确关闭
     with ProcessPoolExecutor(max_workers=32) as executor:
         for image_path in tqdm(all_val_images_path, desc="evaluating"):
-            executor.submit(eval_all_onnx, onnx_float_path, onnx_quant_path, image_path, save_dir_float, save_dir_quant, height=640, width=640)
+            executor.submit(eval_all_onnx, onnx_float_path, onnx_quant_path, image_path, save_dir_float, save_dir_quant, height=640, width=640, show_dir=args.show_dir)

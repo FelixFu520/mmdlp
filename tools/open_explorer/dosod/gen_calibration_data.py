@@ -2,6 +2,7 @@ import os
 import cv2
 import copy
 import numpy as np
+import argparse
 from numpy import ndarray
 from tqdm import tqdm
 import os.path as osp
@@ -40,6 +41,13 @@ def gen_calibration_data(data_dir: str, save_dir: str, height: int = 640, width:
         image.tofile(os.path.join(save_dir, os.path.basename(image_path)[:-4] + ".npy"))
 
 if __name__ == "__main__":
-    data_dir = "/home/users/fa.fu/work/work_dirs/dosod/calibration_images"
-    save_dir = "/home/users/fa.fu/work/work_dirs/dosod/calibration_data_rgb"
-    gen_calibration_data(data_dir, save_dir, height=640, width=640)
+    parser = argparse.ArgumentParser(description="Generate Calibration Data")
+    parser.add_argument("--data_dir", type=str, 
+                        default= "/home/users/fa.fu/work/work_dirs/dosod/calibration_images", 
+                        help="The directory of calibration images")
+    parser.add_argument("--save_dir", type=str, 
+                        default="/home/users/fa.fu/work/work_dirs/dosod/calibration_data_rgb",
+                        help="The directory to save calibration data")
+    args = parser.parse_args()
+
+    gen_calibration_data(args.data_dir, args.save_dir, height=640, width=640)

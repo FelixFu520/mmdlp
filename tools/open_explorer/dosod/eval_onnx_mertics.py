@@ -12,7 +12,7 @@ from mmdet.structures.bbox import (cat_boxes, get_box_tensor, get_box_wh,
                                    scale_boxes)
 # from mmcv.ops import batched_nms
 from torchvision.ops import nms, batched_nms
-
+import argparse
 from typing import List, Optional, Tuple
 from tqdm import tqdm
 import os
@@ -247,6 +247,11 @@ def coco_eval(data_dir, ann_file, classes, img_scale, data_prefix, pred_npy_dir,
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='COCO Evaluation')
+    parser.add_argument('--pred_npy_dir', type=str, default="/home/users/fa.fu/work/work_dirs/dosod/20241103/eval_quant", help='The directory of the prediction numpy files')
+    parser.add_argument('--data_dir', type=str, default="/home/users/fa.fu/work/data/dosod_eval_dataset/", help='The directory of the dataset')
+    parser.add_argument('--ann_file', type=str, default="real_resize_coco_jpg_20241103.json", help='The annotation file of the dataset')
+    args = parser.parse_args()
 
     classes = (
                 'liquid stain',
@@ -261,7 +266,7 @@ if __name__ == "__main__":
     data_prefix = ''
     # TODO: 修改为 quantized.onnx 跑出来的结果路径 
     # pred_npy_dir = "/home/users/fa.fu/work/work_dirs/dosod/20241103/eval_float"
-    pred_npy_dir = "/home/users/fa.fu/work/work_dirs/dosod/20241103/eval_quant"
+    pred_npy_dir = args.pred_npy_dir
 
     
     # TODO: Eval 时这里的参数配置
@@ -279,8 +284,8 @@ if __name__ == "__main__":
     
     device = "cuda:1"
     
-    data_dir = "/home/users/fa.fu/work/data/dosod_eval_dataset/"
-    ann_file = "real_resize_coco_jpg_20241103.json"
+    data_dir = args.data_dir
+    ann_file = args.ann_file
     coco_eval(data_dir, ann_file, classes, img_scale, data_prefix, pred_npy_dir, cfg, device)
 
 
