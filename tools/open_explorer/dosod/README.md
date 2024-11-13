@@ -56,6 +56,9 @@ PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/too
 结果表示改变矫正数据集后, 对掉精度没啥影响
 
 ### 解决精度下降的问题
+
+---
+ 
 v2 修改所有OP为int16
 ```
 hb_mapper makertbin -c /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/20241103/con_DOSOD_L_v2.yaml --model-type onnx
@@ -67,6 +70,8 @@ PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/too
 PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_mertics.py --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/ --ann_file real_resize_coco_jpg_20241103.json --pred_npy_dir /home/users/fa.fu/work/work_dirs/dosod/20241103/eval_quant_v2
 ```
 
+---
+ 
 v3在v2的基础上修改校准方法为default
 ```
 hb_mapper makertbin -c /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/20241103/con_DOSOD_L_v2.yaml --model-type onnx
@@ -77,4 +82,45 @@ PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/too
 
 PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_mertics.py --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/ --ann_file real_resize_coco_jpg_20241103.json --pred_npy_dir /home/users/fa.fu/work/work_dirs/dosod/20241103/eval_quant_v3
 
+```
+
+---
+ 
+计算每个输出的余弦相似度
+```
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/compare_cos.py --float_npy_path /home/users/fa.fu/work/work_dirs/dosod/20241103/eval_float_v3 --quant_npy_path /home/users/fa.fu/work/work_dirs/dosod/20241103/eval_quant_v3 >> cosine.log
+
+```
+
+---
+ 
+第4次试验, 在v3的基础上删除node_info
+```
+hb_mapper makertbin -c /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/20241103/con_DOSOD_L_v4.yaml --model-type onnx
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx.py --onnx_float_path /home/users/fa.fu/work/work_dirs/dosod/20241103/dosod-l_epoch_40_kxj_rep-without-nms_20241103.onnx --onnx_quant_path /home/users/fa.fu/work/work_dirs/dosod/20241103/output4/DOSOD_L_without_nms_v0.4_quantized_model.onnx --save_dir_float /home/users/fa.fu/work/work_dirs/dosod/20241103/eval_float_v4 --save_dir_quant /home/users/fa.fu/work/work_dirs/dosod/20241103/eval_quant_v4 --show_dir eval_result_show_v4
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_mertics.py --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/ --ann_file real_resize_coco_jpg_20241103.json --pred_npy_dir /home/users/fa.fu/work/work_dirs/dosod/20241103/eval_float_v4
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_mertics.py --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/ --ann_file real_resize_coco_jpg_20241103.json --pred_npy_dir /home/users/fa.fu/work/work_dirs/dosod/20241103/eval_quant_v4
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/compare_cos.py --float_npy_path /home/users/fa.fu/work/work_dirs/dosod/20241103/eval_float_v4 --quant_npy_path /home/users/fa.fu/work/work_dirs/dosod/20241103/eval_quant_v4 >> cosine.log
+```
+
+---
+
+第5次实验, 实验校准时是否在onnx中加入了减均值除方差的预处理节点, 在v4的基础上, 修改校准方法, 修改校准数据集
+```
+修改gen_calibration_data.py的第39行 为 image = image / 255
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/gen_calibration_data.py --data_dir /home/users/fa.fu/work/work_dirs/dosod/calibration_images_1112 --save_dir /home/users/fa.fu/work/work_dirs/dosod/calibration_data_rgb_1113
+
+hb_mapper makertbin -c /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/20241103/con_DOSOD_L_v5.yaml --model-type onnx
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx.py --onnx_float_path /home/users/fa.fu/work/work_dirs/dosod/20241103/dosod-l_epoch_40_kxj_rep-without-nms_20241103.onnx --onnx_quant_path /home/users/fa.fu/work/work_dirs/dosod/20241103/output5/DOSOD_L_without_nms_v0.5_quantized_model.onnx --save_dir_float /home/users/fa.fu/work/work_dirs/dosod/20241103/eval_float_v5 --save_dir_quant /home/users/fa.fu/work/work_dirs/dosod/20241103/eval_quant_v5 --show_dir eval_result_show_v5
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_mertics.py --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/ --ann_file real_resize_coco_jpg_20241103.json --pred_npy_dir /home/users/fa.fu/work/work_dirs/dosod/20241103/eval_float_v5
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_mertics.py --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/ --ann_file real_resize_coco_jpg_20241103.json --pred_npy_dir /home/users/fa.fu/work/work_dirs/dosod/20241103/eval_quant_v5
+
+结果表明, 减均值除方差的预处理节点在校准时已经加到onnx中了, 所以校准数据不要再减均值除方差了
 ```
