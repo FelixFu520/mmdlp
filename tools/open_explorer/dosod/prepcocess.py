@@ -1,3 +1,4 @@
+import os
 import cv2
 import numpy as np
 
@@ -38,12 +39,13 @@ def preprocess_image(
         new_width = int(image.shape[1] * min_scale)
         max_new_hw = max(new_height, new_width)
         image = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_LINEAR)
-        top_pad = (max_new_hw - new_height) // 2
-        bottom_pad = max_new_hw - new_height - top_pad
-        left_pad = (max_new_hw - new_width) // 2
-        right_pad = max_new_hw - new_width - left_pad
+        top_pad = (height - new_height) // 2
+        bottom_pad = height - new_height - top_pad
+        left_pad = (width - new_width) // 2
+        right_pad = width - new_width - left_pad
         image = cv2.copyMakeBorder(image, top_pad, bottom_pad, left_pad, right_pad, cv2.BORDER_CONSTANT, value=(114, 114, 114))
 
+        # cv2.imwrite(f"/home/users/fa.fu/work/temp/{os.path.basename(image_path)}", image)
         assert (height, width) == image.shape[:2], f"resize error"
     
     # 处理RGB图
