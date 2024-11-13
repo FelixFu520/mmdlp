@@ -43,11 +43,17 @@ def gen_calibration_data(data_dir: str, save_dir: str, height: int = 640, width:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate Calibration Data")
     parser.add_argument("--data_dir", type=str, 
-                        default= "/home/users/fa.fu/work/work_dirs/dosod/calibration_images", 
+                        default= "/home/users/fa.fu/work/work_dirs/dosod/caliration_data/20241113_v1", 
                         help="The directory of calibration images")
     parser.add_argument("--save_dir", type=str, 
-                        default="/home/users/fa.fu/work/work_dirs/dosod/calibration_data_rgb",
+                        default="/home/users/fa.fu/work/work_dirs/dosod/caliration_data/20241113_v1_rgb",
                         help="The directory to save calibration data")
+    parser.add_argument("--height", type=int,
+                        default=672,
+                        help="height")
+    parser.add_argument("--width", type=int,
+                        default=896,
+                        help="width")
     args = parser.parse_args()
 
-    gen_calibration_data(args.data_dir, args.save_dir, height=640, width=640)
+    gen_calibration_data(args.data_dir, args.save_dir, height=args.height, width=args.width)

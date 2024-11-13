@@ -9,6 +9,7 @@ from matplotlib.figure import Figure
 import onnxruntime as ort
 from horizon_tc_ui import HB_ONNXRuntime
 from horizon_tc_ui.data.transformer import *
+import argparse
 
 from prepcocess import preprocess_image
 
@@ -67,9 +68,29 @@ def infer_quant_onnx(onnx_model_path: str, image_path: str, result_dir: str = ".
 
 
 if __name__ == "__main__":
-    onnx_model_path = "/home/users/fa.fu/work/work_dirs/dosod/20241103/output/DOSOD_L_without_nms_v0.1_quantized_model.onnx"
-    image_path = "/home/users/fa.fu/work/work_dirs/dosod/demo_images/030125.jpg"
-    result_dir = "/home/users/fa.fu/work/work_dirs/dosod/result"
+    parser = argparse.ArgumentParser(description="infer_quant_onnx")
+    parser.add_argument("--onnx_path", type=str, 
+                        default= "/home/users/fa.fu/work/work_dirs/dosod/20241103/output/DOSOD_L_without_nms_v0.1_quantized_model.onnx", 
+                        help="onnx path")
+    parser.add_argument("--image_path", type=str, 
+                        default="/home/users/fa.fu/work/work_dirs/dosod/demo_images/030125.jpg",
+                        help="image path")
+    parser.add_argument("--result_dir", type=str, 
+                        default="/home/users/fa.fu/work/work_dirs/dosod/result",
+                        help="result dir")
+    parser.add_argument("--height", type=int,
+                        default=672,
+                        help="height")
+    parser.add_argument("--width", type=int,
+                        default=896,
+                        help="width")
+
+    args = parser.parse_args()
+
+    onnx_model_path = args.onnx_path
+    image_path = args.image_path
+    result_dir = args.result_dir
+
     os.makedirs(result_dir, exist_ok=True)
 
     # 使用原始onnx推理查看下onnx是否正确
@@ -77,6 +98,6 @@ if __name__ == "__main__":
         onnx_model_path=onnx_model_path,
         image_path=image_path,
         result_dir=osp.join(result_dir, osp.basename(onnx_model_path)[:-5]),
-        height=640,
-        width=640
+        height=args.height,
+        width=args.width,
     )

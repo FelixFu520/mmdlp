@@ -187,6 +187,12 @@ if __name__ == "__main__":
     parser.add_argument("--show_dir", type=str,
                         default="eval_result_show",
                         help="The directory to save show result")
+    parser.add_argument("--height", type=int,
+                        default=640,
+                        help="height")
+    parser.add_argument("--width", type=int,
+                        default=640,
+                        help="width")
     args = parser.parse_args()
 
     # 所有数据迭代器
@@ -203,9 +209,9 @@ if __name__ == "__main__":
     print("start evaluating...")
     
     # for image_path in tqdm(all_val_images_path, desc="evaluating"):
-    #     eval_all_onnx(onnx_float_path, onnx_quant_path, image_path, save_dir_float, save_dir_quant, height=640, width=640)
+    #     eval_all_onnx(onnx_float_path, onnx_quant_path, image_path, save_dir_float, save_dir_quant, height=args.height, width=args.width, show_dir=args.show_dir)
     
     # 使用with语句确保进程池正确关闭
     with ProcessPoolExecutor(max_workers=32) as executor:
         for image_path in tqdm(all_val_images_path, desc="evaluating"):
-            executor.submit(eval_all_onnx, onnx_float_path, onnx_quant_path, image_path, save_dir_float, save_dir_quant, height=640, width=640, show_dir=args.show_dir)
+            executor.submit(eval_all_onnx, onnx_float_path, onnx_quant_path, image_path, save_dir_float, save_dir_quant,  height=args.height, width=args.width, show_dir=args.show_dir)

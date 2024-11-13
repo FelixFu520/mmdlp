@@ -124,3 +124,55 @@ PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/too
 
 结果表明, 减均值除方差的预处理节点在校准时已经加到onnx中了, 所以校准数据不要再减均值除方差了
 ```
+
+
+### 20241113 为现场提供模型
+```
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/infer_original_onnx.py \
+    --onnx_path /home/users/fa.fu/work/work_dirs/dosod/20241113/dosod-l_epoch_40_kxj_rep-without-nms_20241023_672x896.onnx \
+    --height 672 \
+    --width 896
+
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/gen_calibration_data.py \
+    --data_dir /home/users/fa.fu/work/work_dirs/dosod/caliration_data/20241113_v1 \
+    --save_dir /home/users/fa.fu/work/work_dirs/dosod/caliration_data/20241113_v1_rgb 
+
+
+hb_mapper makertbin -c /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/20241113/con_DOSOD_L_v1.yaml --model-type onnx
+
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/infer_quantized_onnx.py \
+    --onnx_path /home/users/fa.fu/work/work_dirs/dosod/20241113/output_v1/DOSOD_L_without_nms_v1_quantized_model.onnx \
+    --height 672 \
+    --width 896
+
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx.py \
+    --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/real_resize_jpg_data_20241023 \
+    --onnx_float_path /home/users/fa.fu/work/work_dirs/dosod/20241113/dosod-l_epoch_40_kxj_rep-without-nms_20241023_672x896.onnx \
+    --onnx_quant_path /home/users/fa.fu/work/work_dirs/dosod/20241113/output_v1/DOSOD_L_without_nms_v1_quantized_model.onnx \
+    --save_dir_float /home/users/fa.fu/work/work_dirs/dosod/20241113/eval_float_v1 \
+    --save_dir_quant /home/users/fa.fu/work/work_dirs/dosod/20241113/eval_quant_v1 \
+    --show_dir eval_result_show_v1 \
+    --height 672 \
+    --width 896
+
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_mertics.py \
+    --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/ \
+    --ann_file real_resize_coco_jpg_20241023.json \
+    --pred_npy_dir /home/users/fa.fu/work/work_dirs/dosod/20241113/eval_float_v1
+
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_mertics.py \
+    --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/ \
+    --ann_file real_resize_coco_jpg_20241023.json \
+    --pred_npy_dir /home/users/fa.fu/work/work_dirs/dosod/20241113/eval_quant_v1
+
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/compare_cos.py \
+    --float_npy_path /home/users/fa.fu/work/work_dirs/dosod/20241113/eval_float_v1 \
+    --quant_npy_path /home/users/fa.fu/work/work_dirs/dosod/20241113/eval_quant_v1 >> cosine.log
+
+```

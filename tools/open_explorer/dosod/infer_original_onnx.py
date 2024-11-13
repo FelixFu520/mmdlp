@@ -3,13 +3,14 @@ import cv2
 import numpy as np
 import os.path as osp
 from horizon_tc_ui import HB_ONNXRuntime
+import argparse
 
 from prepcocess import preprocess_image
 
 MEAN=[123.675, 116.28, 103.53]
 STD=[58.395, 57.12, 57.375]
 
-def infer_origin_onnx(onnx_model_path: str, image_path: str, result_dir: str = "./", height=640, width=640):
+def infer_origin_onnx(onnx_model_path: str, image_path: str, result_dir: str = "./", height=672, width=896):
     # model
     sess = HB_ONNXRuntime(model_file=onnx_model_path)
     input_names = [input.name for input in sess.get_inputs()]
@@ -60,10 +61,29 @@ def infer_origin_onnx(onnx_model_path: str, image_path: str, result_dir: str = "
     
    
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="infer_origin_onnx")
+    parser.add_argument("--onnx_path", type=str, 
+                        default= "/home/users/fa.fu/work/work_dirs/dosod/20241113/dosod-l-epoch_40_kxj_rep-without-nms_20241023_896x672.onnx", 
+                        help="onnx path")
+    parser.add_argument("--image_path", type=str, 
+                        default="/home/users/fa.fu/work/work_dirs/dosod/demo_images/030125.jpg",
+                        help="image path")
+    parser.add_argument("--result_dir", type=str, 
+                        default="/home/users/fa.fu/work/work_dirs/dosod/result",
+                        help="result dir")
+    parser.add_argument("--height", type=int,
+                        default=672,
+                        help="height")
+    parser.add_argument("--width", type=int,
+                        default=896,
+                        help="width")
+    
+    args = parser.parse_args()
 
-    onnx_model_path = "/home/users/fa.fu/work/work_dirs/dosod/20241103/dosod-l_epoch_40_kxj_rep-without-nms_20241103.onnx"
-    image_path = "/home/users/fa.fu/work/work_dirs/dosod/demo_images/030125.jpg"
-    result_dir = "/home/users/fa.fu/work/work_dirs/dosod/result"
+    onnx_model_path = args.onnx_path
+    image_path = args.image_path
+    result_dir = args.result_dir
+
     os.makedirs(result_dir, exist_ok=True)
 
     # 使用原始onnx推理查看下onnx是否正确
@@ -71,4 +91,6 @@ if __name__ == "__main__":
         onnx_model_path=onnx_model_path,
         image_path=image_path,
         result_dir=osp.join(result_dir, osp.basename(onnx_model_path)[:-5]),
+        height=args.height,
+        width=args.width,
     )
