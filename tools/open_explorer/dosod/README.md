@@ -54,3 +54,27 @@ PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/too
 
 ```
 结果表示改变矫正数据集后, 对掉精度没啥影响
+
+### 解决精度下降的问题
+v2 修改所有OP为int16
+```
+hb_mapper makertbin -c /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/20241103/con_DOSOD_L_v2.yaml --model-type onnx
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx.py --onnx_float_path /home/users/fa.fu/work/work_dirs/dosod/20241103/dosod-l_epoch_40_kxj_rep-without-nms_20241103.onnx --onnx_quant_path /home/users/fa.fu/work/work_dirs/dosod/20241103/output2/DOSOD_L_without_nms_v0.2_quantized_model.onnx --save_dir_float /home/users/fa.fu/work/work_dirs/dosod/20241103/eval_float_v2 --save_dir_quant /home/users/fa.fu/work/work_dirs/dosod/20241103/eval_quant_v2 --show_dir eval_result_show_v2
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_mertics.py --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/ --ann_file real_resize_coco_jpg_20241103.json --pred_npy_dir /home/users/fa.fu/work/work_dirs/dosod/20241103/eval_float_v2
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_mertics.py --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/ --ann_file real_resize_coco_jpg_20241103.json --pred_npy_dir /home/users/fa.fu/work/work_dirs/dosod/20241103/eval_quant_v2
+```
+
+v3在v2的基础上修改校准方法为default
+```
+hb_mapper makertbin -c /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/20241103/con_DOSOD_L_v2.yaml --model-type onnx
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx.py --onnx_float_path /home/users/fa.fu/work/work_dirs/dosod/20241103/dosod-l_epoch_40_kxj_rep-without-nms_20241103.onnx --onnx_quant_path /home/users/fa.fu/work/work_dirs/dosod/20241103/output3/DOSOD_L_without_nms_v0.3_quantized_model.onnx --save_dir_float /home/users/fa.fu/work/work_dirs/dosod/20241103/eval_float_v3 --save_dir_quant /home/users/fa.fu/work/work_dirs/dosod/20241103/eval_quant_v3 --show_dir eval_result_show_v3
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_mertics.py --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/ --ann_file real_resize_coco_jpg_20241103.json --pred_npy_dir /home/users/fa.fu/work/work_dirs/dosod/20241103/eval_float_v3
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_mertics.py --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/ --ann_file real_resize_coco_jpg_20241103.json --pred_npy_dir /home/users/fa.fu/work/work_dirs/dosod/20241103/eval_quant_v3
+
+```

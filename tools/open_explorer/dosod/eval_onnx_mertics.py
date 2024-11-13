@@ -152,7 +152,7 @@ def coco_eval(data_dir, ann_file, classes, img_scale, data_prefix, pred_npy_dir,
         img_path = batch_img_metas.img_path
         img_shape = batch_img_metas.img_shape
         base_name = os.path.basename(img_path).replace(".jpg", "")
-        print("**** base_name:", base_name)
+        # print("**** base_name:", base_name)
         ori_shape = batch_img_metas.ori_shape
         scale_factor = batch_img_metas.scale_factor
         pad_param = batch_img_metas.pad_param
