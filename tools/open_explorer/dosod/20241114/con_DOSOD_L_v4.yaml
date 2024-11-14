@@ -1,0 +1,151 @@
+model_parameters:
+  onnx_model: '/home/users/fa.fu/work/work_dirs/dosod/20241114/dosod-l_epoch_40_kxj_rep-without-nms_20241113_672x896.onnx'
+  march: 'bayes-e'
+  output_model_file_prefix: 'DOSOD_L_without_nms_v4'
+  working_dir: '/home/users/fa.fu/work/work_dirs/dosod/20241114/output_v4'
+  remove_node_type: 'Quantize;Dequantize;Transpose;Cast;Reshape'
+  layer_out_dump: False
+  # debug_mode: "dump_calibration_data" 
+  node_info: {
+  "Conv_0": {
+   'ON': 'BPU',
+   'InputType': 'int8',
+   'OutputType': 'int16'
+  },
+  "Conv_301": {
+   'ON': 'BPU',
+   'InputType': 'int16',
+   'OutputType': 'int16'
+  },
+  "Conv_241": {
+   'ON': 'BPU',
+   'InputType': 'int16',
+   'OutputType': 'int16'
+  },
+  "Conv_309": {
+   'ON': 'BPU',
+   'InputType': 'int16',
+   'OutputType': 'int16'
+  },
+  "Conv_452": {
+   'ON': 'BPU',
+   'InputType': 'int16',
+   'OutputType': 'int16'
+  },
+  "Conv_453": {
+   'ON': 'BPU',
+   'InputType': 'int16',
+   'OutputType': 'int16'
+  },
+  "Conv_454": {
+   'ON': 'BPU',
+   'InputType': 'int16',
+   'OutputType': 'int16'
+  },
+  "Conv_455": {
+   'ON': 'BPU',
+   'InputType': 'int16',
+   'OutputType': 'int16'
+  },
+  "Concat_494": {
+   'ON': 'BPU',
+   'InputType': 'int16',
+   'OutputType': 'int16'
+  },
+  "Sigmoid_495": {
+   'ON': 'BPU',
+   'InputType': 'int16',
+   'OutputType': 'int16'
+  },
+  "Transpose_488": {
+   'ON': 'BPU',
+   'InputType': 'int16',
+   'OutputType': 'int16'
+  },
+  "Reshape_489": {
+   'ON': 'BPU',
+   'InputType': 'int16',
+   'OutputType': 'int16'
+  },
+  "Transpose_490": {
+   'ON': 'BPU',
+   'InputType': 'int16',
+   'OutputType': 'int16'
+  }, 
+  "Reshape_491": {
+   'ON': 'BPU',
+   'InputType': 'int16',
+   'OutputType': 'int16'
+  },
+  "Transpose_492": {
+   'ON': 'BPU',
+   'InputType': 'int16',
+   'OutputType': 'int16'
+  },
+  "Reshape_493": {
+   'ON': 'BPU',
+   'InputType': 'int16',
+   'OutputType': 'int16'
+  },
+  "Conv_307": {
+    'ON': 'BPU',
+    'InputType': 'int16',
+    'OutputType': 'int16'
+  },
+  "Conv_308": {
+    'ON': 'BPU',
+    'InputType': 'int16',
+    'OutputType': 'int16'
+  },
+  "Conv_359": {
+    'ON': 'BPU',
+    'InputType': 'int16',
+    'OutputType': 'int16'
+  },
+  "Conv_411": {
+    'ON': 'BPU',
+    'InputType': 'int16',
+    'OutputType': 'int16'
+  },
+  "Conv_360": {
+    'ON': 'BPU',
+    'InputType': 'int16',
+    'OutputType': 'int16'
+  },
+  "Conv_412": {
+    'ON': 'BPU',
+    'InputType': 'int16',
+    'OutputType': 'int16'
+  },
+ }
+ 
+input_parameters:
+  input_name: 'images'
+  input_type_train: 'rgb'
+  input_layout_train: 'NCHW'
+  input_shape: '1x3x672x896'
+  input_batch: 1
+  norm_type: 'data_scale'
+  mean_value: ''
+  scale_value: 0.003921568627451
+  input_layout_rt: 'NHWC'
+  input_type_rt: 'nv12'
+
+
+# 校准参数组
+calibration_parameters:
+  cal_data_dir: '/home/users/fa.fu/work/work_dirs/dosod/caliration_data/20241114_v1_rgb_672×896'
+  cal_data_type: 'float32'
+  preprocess_on: False
+  # 校准使用的算法类型 default
+  # calibration_type: 'default'
+  calibration_type: 'max'
+  max_percentile: 0.99995
+  optimization: 'set_all_nodes_int16;set_Conv_input_int8;set_Conv_output_int8;'
+  
+
+compiler_parameters:
+  compile_mode: 'latency'
+  debug: False
+  optimize_level: 'O3'
+  jobs: 32
