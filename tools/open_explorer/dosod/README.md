@@ -616,3 +616,64 @@ PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/too
 | solid stain  | 0.006 | 0.007  | 0.007  | nan   | 0.018 | 0.014 |
 +--------------+-------+--------+--------+-------+-------+-------+
 ```
+
+### DOSOD-L blur
+```
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/infer_original_onnx.py \
+    --onnx_path /home/users/fa.fu/work/work_dirs/dosod/20241114/dosod-l_epoch_40_kxj_rep-without-nms_motionblur_20241113_672x896.onnx \
+    --height 672 \
+    --width 896
+
+hb_mapper makertbin -c /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/20241114/con_DOSOD_L_v5.yaml --model-type onnx
+=============================================================================
+Output      Cosine Similarity  L1 Distance  L2 Distance  Chebyshev Distance  
+-----------------------------------------------------------------------------
+scores      0.513604           0.000031     0.000000     0.000545            
+boxes       0.999697           5.372114     0.051045     165.431976
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/infer_quantized_onnx.py \
+    --onnx_path /home/users/fa.fu/work/work_dirs/dosod/20241114/output_v5/dosod-l_epoch_40_kxj_rep-without-nms_motionblur_20241113_672x896_quantized_model.onnx \
+    --height 672 \
+    --width 896
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx.py \
+    --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/real_resize_jpg_data_20241103 \
+    --onnx_float_path /home/users/fa.fu/work/work_dirs/dosod/20241114/dosod-l_epoch_40_kxj_rep-without-nms_motionblur_20241113_672x896.onnx \
+    --onnx_quant_path /home/users/fa.fu/work/work_dirs/dosod/20241114/output_v5/dosod-l_epoch_40_kxj_rep-without-nms_motionblur_20241113_672x896_quantized_model.onnx \
+    --save_dir_float /home/users/fa.fu/work/work_dirs/dosod/20241114/eval_float_v5 \
+    --save_dir_quant /home/users/fa.fu/work/work_dirs/dosod/20241114/eval_quant_v5 \
+    --show_dir eval_result_show_v5 \
+    --height 672 \
+    --width 896
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_mertics.py \
+    --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/ \
+    --ann_file real_resize_coco_jpg_20241103.json \
+    --pred_npy_dir /home/users/fa.fu/work/work_dirs/dosod/20241114/eval_float_v5 \
+    --height 672 \
+    --width 896
++--------------+-------+--------+--------+-------+-------+-------+
+| category     | mAP   | mAP_50 | mAP_75 | mAP_s | mAP_m | mAP_l |
++--------------+-------+--------+--------+-------+-------+-------+
+| liquid stain | 0.651 | 0.866  | 0.76   | 0.416 | 0.639 | 0.749 |
+| congee stain | nan   | nan    | nan    | nan   | nan   | nan   |
+| milk stain   | 0.614 | 0.79   | 0.774  | 0.431 | 0.649 | 0.657 |
+| skein        | 0.639 | 0.857  | 0.735  | 0.404 | 0.502 | 0.758 |
+| solid stain  | 0.005 | 0.006  | 0.006  | nan   | 0.0   | 0.022 |
++--------------+-------+--------+--------+-------+-------+-------+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_mertics.py \
+    --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/ \
+    --ann_file real_resize_coco_jpg_20241103.json \
+    --pred_npy_dir /home/users/fa.fu/work/work_dirs/dosod/20241114/eval_quant_v5 \
+    --height 672 \
+    --width 896
++--------------+-------+--------+--------+-------+-------+-------+
+| category     | mAP   | mAP_50 | mAP_75 | mAP_s | mAP_m | mAP_l |
++--------------+-------+--------+--------+-------+-------+-------+
+| liquid stain | 0.61  | 0.852  | 0.693  | 0.358 | 0.578 | 0.734 |
+| congee stain | nan   | nan    | nan    | nan   | nan   | nan   |
+| milk stain   | 0.602 | 0.806  | 0.758  | 0.379 | 0.63  | 0.66  |
+| skein        | 0.606 | 0.839  | 0.738  | 0.363 | 0.461 | 0.738 |
+| solid stain  | 0.01  | 0.011  | 0.011  | nan   | 0.0   | 0.025 |
++--------------+-------+--------+--------+-------+-------+-------+
+```
