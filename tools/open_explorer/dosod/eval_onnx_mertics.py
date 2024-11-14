@@ -251,6 +251,12 @@ if __name__ == "__main__":
     parser.add_argument('--pred_npy_dir', type=str, default="/home/users/fa.fu/work/work_dirs/dosod/20241103/eval_quant", help='The directory of the prediction numpy files')
     parser.add_argument('--data_dir', type=str, default="/home/users/fa.fu/work/data/dosod_eval_dataset/", help='The directory of the dataset')
     parser.add_argument('--ann_file', type=str, default="real_resize_coco_jpg_20241103.json", help='The annotation file of the dataset')
+    parser.add_argument("--height", type=int,
+                        default=640,
+                        help="height")
+    parser.add_argument("--width", type=int,
+                        default=640,
+                        help="width")
     args = parser.parse_args()
 
     classes = (
@@ -261,7 +267,7 @@ if __name__ == "__main__":
                 'solid stain',
     )
     # Define image scale
-    img_scale = (640, 640)  
+    img_scale = (args.width, args.height)  
 
     data_prefix = ''
     # TODO: 修改为 quantized.onnx 跑出来的结果路径 

@@ -162,13 +162,17 @@ PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/too
 PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_mertics.py \
     --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/ \
     --ann_file real_resize_coco_jpg_20241023.json \
-    --pred_npy_dir /home/users/fa.fu/work/work_dirs/dosod/20241113/eval_float_v1
+    --pred_npy_dir /home/users/fa.fu/work/work_dirs/dosod/20241113/eval_float_v1 \
+    --height 672 \
+    --width 896
 
 
 PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_mertics.py \
     --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/ \
     --ann_file real_resize_coco_jpg_20241023.json \
-    --pred_npy_dir /home/users/fa.fu/work/work_dirs/dosod/20241113/eval_quant_v1
+    --pred_npy_dir /home/users/fa.fu/work/work_dirs/dosod/20241113/eval_quant_v1 \
+    --height 672 \
+    --width 896
 
 
 PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/compare_cos.py \
