@@ -100,11 +100,15 @@ class STDCContextPathNet(BaseModule):
                         mode=self.upsample_mode,
                         align_corners=self.align_corners)
         else:   
-            feature_up = resize(
-                avg_feat,
-                size=outs[-1].shape[2:],
-                mode=self.upsample_mode,
-                align_corners=self.align_corners)
+            # feature_up = resize(
+            #     avg_feat,
+            #     size=outs[-1].shape[2:],
+            #     mode=self.upsample_mode,
+            #     align_corners=self.align_corners)
+            feature_up = avg_feat.repeat(1, 1, outs[-1].shape[2], 1)
+            feature_up = feature_up.repeat(1, 1, 1, outs[-1].shape[3])
+
+            
         
         arms_out = []
         for i in range(len(self.arms)):
