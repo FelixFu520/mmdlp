@@ -1,4 +1,6 @@
 import os
+import onnx
+import onnxsim
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -8,8 +10,9 @@ from mmseg.apis import init_model, inference_model, show_result_pyplot
 
 DEVICE = "cuda:4"
 IS_WRAPPER = False
-
-fake_input = torch.randn(1, 3, 1024, 2048).to(DEVICE)
+HEIGHT=480
+WIDTH=640
+fake_input = torch.randn(1, 3, HEIGHT, WIDTH).to(DEVICE)
 
 if IS_WRAPPER:
     onnx_paths = [
@@ -20,10 +23,10 @@ if IS_WRAPPER:
     ]
 else:
     onnx_paths = [
-        "/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_1024×2048/STDC1_nopre.onnx",
-        "/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_1024×2048/STDC1_pre.onnx",
-        "/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_1024×2048/STDC2_nopre.onnx",
-        "/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_1024×2048/STDC2_pre.onnx",
+        f"/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_{HEIGHT}×{WIDTH}/STDC1_nopre.onnx",
+        f"/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_{HEIGHT}×{WIDTH}/STDC1_pre.onnx",
+        f"/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_{HEIGHT}×{WIDTH}/STDC2_nopre.onnx",
+        f"/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_{HEIGHT}×{WIDTH}/STDC2_pre.onnx",
     ]
 config_files = [
     '/home/users/fa.fu/work/mmdlp/configs/stdc_horizon/config_from_mmseg/stdc/stdc1_4xb12-80k_cityscapes-512x1024.py',
@@ -37,7 +40,7 @@ checkpoint_files = [
     '/home/users/fa.fu/work/work_dirs/stdc_horizon/stdc2_512x1024_80k_cityscapes_20220222_132015-fb1e3a1a.pth',
     '/home/users/fa.fu/work/work_dirs/stdc_horizon/stdc2_in1k-pre_512x1024_80k_cityscapes_20220224_073048-1f8f0f6c.pth'
 ]
-img = '/home/users/fa.fu/work/mmdlp/configs/stdc_horizon/krefeld_000000_012353_leftImg8bit.png'
+img = '/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_1024×2048/demo_images/krefeld_000000_012353_leftImg8bit.png'
 
 class WraperStdcUpsample(nn.Module):
     def __init__(self, stdc: nn.Module):
@@ -86,6 +89,8 @@ if __name__ == "__main__":
                 do_constant_folding=True, 
                 export_params=True, 
             )
+        model_opt, check_ok =  onnxsim.simplify(onnx_path)
+        onnx.save(model_opt, onnx_path[:-5] + "_opt.onnx")
 
         # test a single image
         if not torch.cuda.is_available():

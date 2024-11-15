@@ -7,7 +7,7 @@
 1~2 需要在有mm系列的环境下执行, 3~6 需要在有OE的环境上运行, 7是两个环境都需要使用
 
 # 1. 导出onnx
-PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/configs/stdc_horizon/export.py
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/stdc/export.py
 
 # 2. 从训练集或者验证集中筛选矫正数据, 最好是有代表性, 每类都来点就行
 PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/configs/stdc_horizon/collect_calibration_data.py
