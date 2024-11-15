@@ -16,17 +16,17 @@ fake_input = torch.randn(1, 3, HEIGHT, WIDTH).to(DEVICE)
 
 if IS_WRAPPER:
     onnx_paths = [
-        "/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx/STDC1_nopre_wrapper.onnx",
-        "/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx/STDC1_pre_wrapper.onnx",
-        "/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx/STDC2_nopre_wrapper.onnx",
-        "/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx/STDC2_pre_wrapper.onnx",
+        "/home/users/fa.fu/work/work_dirs/stdc/stdc_horizon_export_onnx/STDC1_nopre_wrapper.onnx",
+        "/home/users/fa.fu/work/work_dirs/stdc/stdc_horizon_export_onnx/STDC1_pre_wrapper.onnx",
+        "/home/users/fa.fu/work/work_dirs/stdc/stdc_horizon_export_onnx/STDC2_nopre_wrapper.onnx",
+        "/home/users/fa.fu/work/work_dirs/stdc/stdc_horizon_export_onnx/STDC2_pre_wrapper.onnx",
     ]
 else:
     onnx_paths = [
-        f"/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_{HEIGHT}×{WIDTH}/STDC1_nopre.onnx",
-        f"/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_{HEIGHT}×{WIDTH}/STDC1_pre.onnx",
-        f"/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_{HEIGHT}×{WIDTH}/STDC2_nopre.onnx",
-        f"/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_{HEIGHT}×{WIDTH}/STDC2_pre.onnx",
+        f"/home/users/fa.fu/work/work_dirs/stdc/stdc_horizon_export_onnx_{HEIGHT}×{WIDTH}/STDC1_nopre.onnx",
+        f"/home/users/fa.fu/work/work_dirs/stdc/stdc_horizon_export_onnx_{HEIGHT}×{WIDTH}/STDC1_pre.onnx",
+        f"/home/users/fa.fu/work/work_dirs/stdc/stdc_horizon_export_onnx_{HEIGHT}×{WIDTH}/STDC2_nopre.onnx",
+        f"/home/users/fa.fu/work/work_dirs/stdc/stdc_horizon_export_onnx_{HEIGHT}×{WIDTH}/STDC2_pre.onnx",
     ]
 config_files = [
     '/home/users/fa.fu/work/mmdlp/configs/stdc_horizon/config_from_mmseg/stdc/stdc1_4xb12-80k_cityscapes-512x1024.py',
@@ -35,12 +35,12 @@ config_files = [
     '/home/users/fa.fu/work/mmdlp/configs/stdc_horizon/config_from_mmseg/stdc/stdc2_in1k-pre_4xb12-80k_cityscapes-512x1024.py',
 ]
 checkpoint_files = [
-    '/home/users/fa.fu/work/work_dirs/stdc_horizon/stdc1_512x1024_80k_cityscapes_20220224_073048-74e6920a.pth',
-    '/home/users/fa.fu/work/work_dirs/stdc_horizon/stdc1_in1k-pre_512x1024_80k_cityscapes_20220224_141648-3d4c2981.pth',
-    '/home/users/fa.fu/work/work_dirs/stdc_horizon/stdc2_512x1024_80k_cityscapes_20220222_132015-fb1e3a1a.pth',
-    '/home/users/fa.fu/work/work_dirs/stdc_horizon/stdc2_in1k-pre_512x1024_80k_cityscapes_20220224_073048-1f8f0f6c.pth'
+    '/home/users/fa.fu/work/work_dirs/stdc/stdc_horizon/stdc1_512x1024_80k_cityscapes_20220224_073048-74e6920a.pth',
+    '/home/users/fa.fu/work/work_dirs/stdc/stdc_horizon/stdc1_in1k-pre_512x1024_80k_cityscapes_20220224_141648-3d4c2981.pth',
+    '/home/users/fa.fu/work/work_dirs/stdc/stdc_horizon/stdc2_512x1024_80k_cityscapes_20220222_132015-fb1e3a1a.pth',
+    '/home/users/fa.fu/work/work_dirs/stdc/stdc_horizon/stdc2_in1k-pre_512x1024_80k_cityscapes_20220224_073048-1f8f0f6c.pth'
 ]
-img = '/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx_1024×2048/demo_images/krefeld_000000_012353_leftImg8bit.png'
+img = '/home/users/fa.fu/work/work_dirs/stdc/stdc_horizon_export_onnx_1024×2048/demo_images/krefeld_000000_012353_leftImg8bit.png'
 
 class WraperStdcUpsample(nn.Module):
     def __init__(self, stdc: nn.Module):
@@ -98,5 +98,5 @@ if __name__ == "__main__":
         result = inference_model(model, img)
 
         # show the results
-        vis_result = show_result_pyplot(model, img, result, show=False, save_dir=f"/home/users/fa.fu/work/work_dirs/stdc_horizon_export_onnx/{i}")
+        vis_result = show_result_pyplot(model, img, result, show=False, save_dir=f"/home/users/fa.fu/work/work_dirs/stdc/stdc_horizon_export_onnx/{i}")
         plt.imshow(vis_result)
