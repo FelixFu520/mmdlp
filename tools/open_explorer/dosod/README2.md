@@ -335,5 +335,77 @@ PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/too
 
 ```
 
+### (4). 1113日, 训练输入672×672, onnx输入672×672, yaml文件v3(修改所有节点为int16，强制修改某几个Resize为int16)
+```
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/infer_original_onnx.py \
+    --onnx_path /home/users/fa.fu/work/work_dirs/dosod/20241113/dosod-l_epoch_40_kxj_rep-without-nms_20241113_672x896_672x896.onnx \
+    --height 672 \
+    --width 896
+
+
+hb_mapper makertbin -c /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/20241113/con_DOSOD_L_v5.yaml --model-type onnx
+
+
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/infer_quantized_onnx.py \
+    --onnx_path /home/users/fa.fu/work/work_dirs/dosod/20241113/output_v5/dosod-l_epoch_40_kxj_rep-without-nms_20241113_672x896_672x896_v5_quantized_model.onnx \
+    --height 672 \
+    --width 896
+
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx.py \
+    --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/real_resize_jpg_data_20241103 \
+    --onnx_float_path /home/users/fa.fu/work/work_dirs/dosod/20241113/dosod-l_epoch_40_kxj_rep-without-nms_20241113_672x896_672x896.onnx \
+    --onnx_quant_path /home/users/fa.fu/work/work_dirs/dosod/20241113/output_v5/dosod-l_epoch_40_kxj_rep-without-nms_20241113_672x896_672x896_v5_quantized_model.onnx \
+    --save_dir_float /home/users/fa.fu/work/work_dirs/dosod/20241113/eval_float_v5_data20241103 \
+    --save_dir_quant /home/users/fa.fu/work/work_dirs/dosod/20241113/eval_quant_v5_data20241103 \
+    --show_dir eval_result_show_v5_data20241103 \
+    --height 672 \
+    --width 896
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx.py \
+    --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/real_resize_jpg_data_20241114 \
+    --onnx_float_path /home/users/fa.fu/work/work_dirs/dosod/20241113/dosod-l_epoch_40_kxj_rep-without-nms_20241113_672x896_672x896.onnx \
+    --onnx_quant_path /home/users/fa.fu/work/work_dirs/dosod/20241113/output_v5/dosod-l_epoch_40_kxj_rep-without-nms_20241113_672x896_672x896_v5_quantized_model.onnx \
+    --save_dir_float /home/users/fa.fu/work/work_dirs/dosod/20241113/eval_float_v5_data20241114 \
+    --save_dir_quant /home/users/fa.fu/work/work_dirs/dosod/20241113/eval_quant_v5_data20241114 \
+    --show_dir eval_result_show_v5_data20241114 \
+    --height 672 \
+    --width 896
+
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_mertics.py \
+    --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/ \
+    --ann_file real_resize_coco_jpg_20241103.json \
+    --pred_npy_dir /home/users/fa.fu/work/work_dirs/dosod/20241113/eval_float_v3_data20241103 \
+    --height 672 \
+    --width 896
+
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_mertics.py \
+    --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/ \
+    --ann_file real_resize_coco_jpg_20241103.json \
+    --pred_npy_dir /home/users/fa.fu/work/work_dirs/dosod/20241113/eval_quant_v3_data20241103 \
+    --height 672 \
+    --width 896
+
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_mertics.py \
+    --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/ \
+    --ann_file real_resize_coco_jpg_20241114.json \
+    --pred_npy_dir /home/users/fa.fu/work/work_dirs/dosod/20241113/eval_float_v3_data20241114 \
+    --height 672 \
+    --width 896
+
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_mertics.py \
+    --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/ \
+    --ann_file real_resize_coco_jpg_20241114.json \
+    --pred_npy_dir /home/users/fa.fu/work/work_dirs/dosod/20241113/eval_quant_v3_data20241114 \
+    --height 672 \
+    --width 896
+
+
+```
+
 ---
 
