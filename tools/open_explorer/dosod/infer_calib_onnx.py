@@ -22,6 +22,17 @@ def infer_calib_onnx(onnx_model_path: str, image_path: str, result_dir: str = ".
 
     # image
     # 因为量化后的onnx会在onnx的开始插入nv12转rgb的操作，而我们输入的数据是rgb，所以这里需要转换下
+    # image = preprocess_image(
+    #     image_path, 
+    #     height=height, 
+    #     width=width,
+    #     bgr_to_rgb=True,
+    #     to_float=True,
+    #     mean_std=False, 
+    #     transpose=True, 
+    #     new_axis=True
+    # )
+    # input_data = image
     image = preprocess_image(
         image_path, 
         height=height, 
@@ -30,9 +41,14 @@ def infer_calib_onnx(onnx_model_path: str, image_path: str, result_dir: str = ".
         to_float=True,
         mean_std=False, 
         transpose=True, 
-        new_axis=True
+        new_axis=False
     )
-    input_data = image
+    fun_t = RGB2YUV444Transformer(data_format="CHW")
+    input_data = fun_t.run_transform(image)
+    input_data = input_data[np.newaxis, ...]
+    # input_data -= 128
+    # input_data = input_data.astype(np.int8)
+    # input_data = input_data.transpose(0, 2, 3, 1)
     # infer
     feed_dict = {
         input_names[0]: input_data,
@@ -46,10 +62,10 @@ def infer_calib_onnx(onnx_model_path: str, image_path: str, result_dir: str = ".
         scores = scores.squeeze(0)
         argmax_idx = np.argmax(scores, axis=1).astype(np.int8)
         argmax_scores = scores[np.arange(scores.shape[0]), argmax_idx]
-        indexs = cv2.dnn.NMSBoxes(bboxes, argmax_scores, 0.6, 0.5)
+        indexs = cv2.dnn.NMSBoxes(bboxes, argmax_scores, 0.02, 0.5)
 
         # 画图
-        image = image[0].transpose(1, 2, 0)
+        image = image.transpose(1, 2, 0)
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
         for idx in indexs:
             cv2.rectangle(image, 
@@ -68,7 +84,9 @@ if __name__ == "__main__":
                         default= "/home/users/fa.fu/work/work_dirs/dosod/20241116/output-v1/dosod-l_epoch_40_kxj_rep-without-nms_20241115_1024x1024_672x896_v1_calibrated_model.onnx", 
                         help="onnx path")
     parser.add_argument("--image_path", type=str, 
-                        default="/home/users/fa.fu/work/work_dirs/dosod/demo_images/030125.jpg",
+                        # default="/home/users/fa.fu/work/work_dirs/dosod/demo_images/030125.jpg",
+                        default="/home/users/fa.fu/work/work_dirs/dosod/demo_images/0892.jpg",
+
                         help="image path")
     parser.add_argument("--result_dir", type=str, 
                         default="/home/users/fa.fu/work/work_dirs/dosod/result",
