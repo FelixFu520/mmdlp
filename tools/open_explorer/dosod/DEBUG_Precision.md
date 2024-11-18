@@ -404,3 +404,78 @@ PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/too
     --float_npy_path /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/eval_float_v5_data20241103 \
     --quant_npy_path /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/eval_calib_v5_data20241103
 ```
+
+### con_DOSOD_L_v6.yaml
+```
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/gen_calibration_data_featuremap.py \
+    --data_dir /home/users/fa.fu/work/work_dirs/dosod/caliration_data/real_resize_jpg_data_20241103 \
+    --save_dir /home/users/fa.fu/work/work_dirs/dosod/caliration_data/calibration_images_test_rgb_672×896-featuremap \
+    --height 672 \
+    --width 896
+
+hb_mapper makertbin -c /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/20241116_debug/con_DOSOD_L_v6.yaml --model-type onnx
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_featuremap.py \
+    --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/real_resize_jpg_data_20241103 \
+    --onnx_float_path /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/dosod-l_epoch_40_kxj_rep-without-nms_motionblur_20241115_1024x1024_672x896.onnx \
+    --onnx_calib_path /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/output-v6/dosod-l_epoch_40_kxj_rep-without-nms_motionblur_20241115_1024x1024_672x896_v6_calibrated_model.onnx \
+    --onnx_quant_path /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/output-v6/dosod-l_epoch_40_kxj_rep-without-nms_motionblur_20241115_1024x1024_672x896_v6_quantized_model.onnx \
+    --save_dir_float /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/eval_float_v6_data20241103 \
+    --save_dir_calib /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/eval_calib_v6_data20241103 \
+    --save_dir_quant /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/eval_quant_v6_data20241103 \
+    --show_dir eval_result_show_v6_data20241103 \
+    --height 672 \
+    --width 896
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_mertics.py \
+    --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/ \
+    --ann_file real_resize_coco_jpg_20241103.json \
+    --pred_npy_dir /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/eval_float_v6_data20241103 \
+    --height 672 \
+    --width 896
++--------------+-------+--------+--------+-------+-------+-------+
+| category     | mAP   | mAP_50 | mAP_75 | mAP_s | mAP_m | mAP_l |
++--------------+-------+--------+--------+-------+-------+-------+
+| liquid stain | 0.647 | 0.853  | 0.766  | 0.372 | 0.634 | 0.74  |
+| congee stain | nan   | nan    | nan    | nan   | nan   | nan   |
+| milk stain   | 0.666 | 0.838  | 0.838  | 0.536 | 0.67  | 0.703 |
+| skein        | 0.617 | 0.812  | 0.689  | 0.327 | 0.484 | 0.759 |
+| solid stain  | 0.064 | 0.064  | 0.064  | nan   | 0.252 | 0.0   |
++--------------+-------+--------+--------+-------+-------+-------+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_mertics.py \
+    --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/ \
+    --ann_file real_resize_coco_jpg_20241103.json \
+    --pred_npy_dir /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/eval_calib_v6_data20241103 \
+    --height 672 \
+    --width 896
++--------------+-------+--------+--------+-------+-------+-------+
+| category     | mAP   | mAP_50 | mAP_75 | mAP_s | mAP_m | mAP_l |
++--------------+-------+--------+--------+-------+-------+-------+
+| liquid stain | 0.617 | 0.848  | 0.73   | 0.376 | 0.588 | 0.73  |
+| congee stain | nan   | nan    | nan    | nan   | nan   | nan   |
+| milk stain   | 0.624 | 0.823  | 0.764  | 0.541 | 0.624 | 0.652 |
+| skein        | 0.592 | 0.787  | 0.679  | 0.244 | 0.473 | 0.739 |
+| solid stain  | 0.039 | 0.043  | 0.043  | nan   | 0.151 | 0.0   |
++--------------+-------+--------+--------+-------+-------+-------+
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_mertics.py \
+    --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/ \
+    --ann_file real_resize_coco_jpg_20241103.json \
+    --pred_npy_dir /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/eval_quant_v6_data20241103 \
+    --height 672 \
+    --width 896
++--------------+-------+--------+--------+-------+-------+-------+
+| category     | mAP   | mAP_50 | mAP_75 | mAP_s | mAP_m | mAP_l |
++--------------+-------+--------+--------+-------+-------+-------+
+| liquid stain | 0.616 | 0.85   | 0.729  | 0.374 | 0.587 | 0.729 |
+| congee stain | nan   | nan    | nan    | nan   | nan   | nan   |
+| milk stain   | 0.628 | 0.83   | 0.771  | 0.55  | 0.619 | 0.678 |
+| skein        | 0.59  | 0.788  | 0.678  | 0.257 | 0.464 | 0.739 |
+| solid stain  | 0.029 | 0.032  | 0.032  | nan   | 0.114 | 0.0   |
++--------------+-------+--------+--------+-------+-------+-------+
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/compare_cos.py \
+    --float_npy_path /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/eval_float_v6_data20241103 \
+    --quant_npy_path /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/eval_calib_v6_data20241103
+
+```
