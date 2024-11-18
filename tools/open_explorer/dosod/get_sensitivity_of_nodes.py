@@ -7,21 +7,23 @@ logging.basicConfig(filename='get_sensitivity_of_nodes.log', level=logging.DEBUG
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Get sensitivity of nodes')
-    parser.add_argument('--model_file', type=str, 
+    parser.add_argument('--model_output', type=str,
+                        default='./model_output-v3/',
+                        help="model or file"
+                        )
+    parser.add_argument('--onnx_name', type=str, 
                         default='./model_output-v3/DOSOD_L_4_without_nms_int16_nv12_conv_int8_1023_calibrated_model.onnx',
                         help='model or file')
-    parser.add_argument("--output_dir", type=str, 
-                        default='./model_output-v3/', 
-                        help='output directory')
-    parser.add_argument("--calibrated_data", type=str,
-                        default='./model_output-v3/calibration_data',
-                        help='calibrated data')
+    
     args = parser.parse_args()
+    
+    model_output = args.model_output
+    onnx_name = args.onnx_name
 
+    
 
-    model_output = args.output_dir
-    calibrated_model = args.model_file
-    cali_dataset = args.calibrated_data
+    calibrated_model =  model_output + onnx_name
+    cali_dataset =  model_output + "calibration_data"
 
     metrics=['cosine-similarity', 'mse', 'mre', 'sqnr', 'chebyshev']
     metrics=['cosine-similarity']

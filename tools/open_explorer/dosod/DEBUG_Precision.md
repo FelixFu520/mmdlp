@@ -369,8 +369,38 @@ PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/too
 
 ### con_DOSOD_L_v5.yaml
 ```
+hb_mapper makertbin -c /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/20241116_debug/con_DOSOD_L_v5.yaml --model-type onnx
+
+
 PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/get_sensitivity_of_nodes.py \
-    --model_file /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/output-v4/dosod-l_epoch_40_kxj_rep-without-nms_motionblur_20241115_1024x1024_672x896_v4_calibrated_model.onnx \
-    --output_dir /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/output-v4-debug/ \
-    --calibrated_data /home/users/fa.fu/work/work_dirs/dosod/caliration_data/calibration_images_1115_all_rgb_672×896-featuremap/
+    --model_output /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/output-v5/ \
+    --onnx_name dosod-l_epoch_40_kxj_rep-without-nms_motionblur_20241115_1024x1024_672x896_v5_calibrated_model.onnx
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_featuremap.py \
+    --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/real_resize_jpg_data_20241103 \
+    --onnx_float_path /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/dosod-l_epoch_40_kxj_rep-without-nms_motionblur_20241115_1024x1024_672x896.onnx \
+    --onnx_calib_path /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/output-v5/dosod-l_epoch_40_kxj_rep-without-nms_motionblur_20241115_1024x1024_672x896_v5_calibrated_model.onnx \
+    --onnx_quant_path /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/output-v5/dosod-l_epoch_40_kxj_rep-without-nms_motionblur_20241115_1024x1024_672x896_v5_quantized_model.onnx \
+    --save_dir_float /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/eval_float_v5_data20241103 \
+    --save_dir_calib /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/eval_calib_v5_data20241103 \
+    --save_dir_quant /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/eval_quant_v5_data20241103 \
+    --show_dir eval_result_show_v5_data20241103 \
+    --height 672 \
+    --width 896
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/eval_onnx_featuremap.py \
+    --data_dir /home/users/fa.fu/work/data/dosod_eval_dataset/real_resize_jpg_data_20241103 \
+    --onnx_float_path /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/dosod-l_epoch_40_kxj_rep-without-nms_motionblur_20241115_1024x1024_672x896.onnx \
+    --onnx_calib_path /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/output-v5/dosod-l_epoch_40_kxj_rep-without-nms_motionblur_20241115_1024x1024_672x896_v5_optimized_float_model.onnx \
+    --onnx_quant_path /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/output-v5/dosod-l_epoch_40_kxj_rep-without-nms_motionblur_20241115_1024x1024_672x896_v5_quantized_model.onnx \
+    --save_dir_float /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/eval_float_v5_data20241103-2 \
+    --save_dir_calib /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/eval_calib_v5_data20241103-2 \
+    --save_dir_quant /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/eval_quant_v5_data20241103-2 \
+    --show_dir eval_result_show_v5_data20241103-2 \
+    --height 672 \
+    --width 896
+
+
+PYTHONPATH=/home/users/fa.fu/work/mmdlp/ python /home/users/fa.fu/work/mmdlp/tools/open_explorer/dosod/compare_cos.py \
+    --float_npy_path /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/eval_float_v5_data20241103 \
+    --quant_npy_path /home/users/fa.fu/work/work_dirs/dosod/20241116_debug/eval_calib_v5_data20241103
 ```
