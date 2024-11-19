@@ -51,7 +51,7 @@ def infer_quant_onnx(onnx_model_path: str, image_path: str, result_dir: str = ".
         scores = scores.squeeze(0)
         argmax_idx = np.argmax(scores, axis=1).astype(np.int8)
         argmax_scores = scores[np.arange(scores.shape[0]), argmax_idx]
-        indexs = cv2.dnn.NMSBoxes(bboxes, argmax_scores, 0.6, 0.5)
+        indexs = cv2.dnn.NMSBoxes(bboxes, argmax_scores, 0.4, 0.5)
 
         # 画图
         image = image.transpose(1, 2, 0)
