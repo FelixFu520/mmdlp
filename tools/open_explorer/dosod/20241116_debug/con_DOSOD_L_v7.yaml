@@ -1,8 +1,8 @@
 model_parameters:
   onnx_model: '/home/users/fa.fu/work/work_dirs/dosod/20241116_debug/dosod-l_epoch_40_kxj_rep-without-nms_motionblur_20241115_1024x1024_672x896.onnx'
   march: 'bayes-e'
-  output_model_file_prefix: 'dosod-l_epoch_40_kxj_rep-without-nms_motionblur_20241115_1024x1024_672x896_v6'
-  working_dir: '/home/users/fa.fu/work/work_dirs/dosod/20241116_debug/output-v6'
+  output_model_file_prefix: 'dosod-l_epoch_40_kxj_rep-without-nms_motionblur_20241115_1024x1024_672x896_v7'
+  working_dir: '/home/users/fa.fu/work/work_dirs/dosod/20241116_debug/output-v7'
   remove_node_type: 'Quantize;Dequantize;Transpose;Cast;Reshape'
   layer_out_dump: False
   debug_mode: "dump_calibration_data"
