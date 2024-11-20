@@ -55,6 +55,7 @@ def infer_origin_onnx(onnx_model_path: str, image_path: str, result_dir: str = "
                         (int(bboxes[idx][2]), int(bboxes[idx][3])),
                         (0, 255, 0), 
                         2)
+            cv2.putText(image, str(argmax_scores[idx]), (int(bboxes[idx][0]), int(bboxes[idx][1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
         dst_path = os.path.join(result_dir, os.path.basename(image_path)[:-4]+"_result.png")
         os.makedirs(os.path.dirname(dst_path), exist_ok=True)
         cv2.imwrite(dst_path, image)
