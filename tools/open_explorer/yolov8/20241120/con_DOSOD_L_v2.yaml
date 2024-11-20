@@ -1,0 +1,40 @@
+model_parameters:
+  onnx_model: '/home/users/fa.fu/work/work_dirs/yolov8/20241120/yolov8-l_epoch_40_kxj-without-nms_20241103_1024x1024_672x896.onnx'
+  march: 'bayes-e'
+  output_model_file_prefix: 'yolov8-l_epoch_40_kxj-without-nms_20241103_1024x1024_672x896_v2'
+  working_dir: '/home/users/fa.fu/work/work_dirs/yolov8/20241120/output-v2'
+  remove_node_type: 'Quantize;Dequantize;Transpose;Cast;Reshape'
+  layer_out_dump: False
+  # debug_mode: "dump_calibration_data" 
+  
+ 
+input_parameters:
+  input_name: 'images'
+  input_type_train: 'featuremap'
+  input_layout_train: 'NCHW'
+  input_shape: '1x3x672x896'
+  input_batch: 1
+  norm_type: 'no_preprocess'
+  mean_value: ''
+  scale_value: 0.003921568627451
+  input_layout_rt: 'NHWC'
+  input_type_rt: 'featuremap'
+
+
+# 校准参数组
+calibration_parameters:
+  cal_data_dir: '/home/users/fa.fu/work/work_dirs/yolov8/calibration_data/calibration_images_v1_rgb_20241120_featuremap'
+  cal_data_type: 'float32'
+  preprocess_on: False
+  # 校准使用的算法类型 default
+  # calibration_type: 'default'
+  calibration_type: 'max'
+  max_percentile: 0.99995
+  optimization: 'set_all_nodes_int16'
+  
+
+compiler_parameters:
+  compile_mode: 'latency'
+  debug: False
+  optimize_level: 'O3'
+  jobs: 32
