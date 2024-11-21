@@ -1,2 +1,1 @@
-from .stdc import STDCContextPathNet
-from .EfficientNetLite import EfficientNetLite0
+from .models import EfficientNetLite0, STDCContextPathNet
