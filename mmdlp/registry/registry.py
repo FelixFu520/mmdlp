@@ -37,7 +37,7 @@ RUNNERS = Registry(
     'runner', 
     parent=MMENGINE_RUNNERS, 
     scope="mmdlp",
-    locations=['mmdlp.pruning'])
+    locations=['mmdlp.horizon'])
 # manage runner constructors that define how to initialize runners
 RUNNER_CONSTRUCTORS = Registry(
     'runner constructor', 
@@ -53,7 +53,7 @@ HOOKS = Registry(
     'hook', 
     parent=MMENGINE_HOOKS, 
     scope='mmdlp',
-    locations=['mmdlp.pruning'])
+    locations=['mmdlp.horizon'])
 
 # manage data-related modules
 DATASETS = Registry(
@@ -74,7 +74,7 @@ MODELS = Registry(
     'model', 
     parent=MMENGINE_MODELS, 
     scope="mmdlp",
-    locations=['mmdlp.pruning', 'mmdlp.horizon'])
+    locations=['mmdlp.horizon'])
 # mangage all kinds of model wrappers like 'MMDistributedDataParallel'
 MODEL_WRAPPERS = Registry(
     'model_wrapper', 
@@ -123,7 +123,7 @@ TASK_UTILS = Registry(
     'task util', 
     parent=MMENGINE_TASK_UTILS, 
     scope="mmdlp",
-    locations=['mmdlp.pruning'])
+    locations=['mmdlp.horizon'])
 
 # manage visualizer
 VISUALIZERS = Registry(
