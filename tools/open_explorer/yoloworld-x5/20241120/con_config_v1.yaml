@@ -1,0 +1,34 @@
+model_parameters:
+  onnx_model: '/home/users/fa.fu/work/work_dirs/yoloworld-x5/20241120/yolo_world_v2_s_obj365v1_goldg_pretrain-55b943ea_rep_conv.onnx'
+  march: 'bayes-e'
+  output_model_file_prefix: 'yolo_world_v2_s_int16_nv12'
+  working_dir: '/home/users/fa.fu/work/work_dirs/yoloworld-x5/20241120/output-v1'
+  remove_node_type: 'Dequantize;Quantize;Transpose;Cast;Reshape'
+  layer_out_dump: False
+
+input_parameters:
+  input_name: 'images'
+  input_type_train: 'rgb'
+  input_layout_train: 'NCHW'
+  input_shape: '1x3x640x640'
+  input_batch: 1
+  norm_type: 'data_scale'
+  mean_value: ''
+  scale_value: 0.003921568627451
+  input_layout_rt: 'NHWC'
+  input_type_rt: 'nv12'
+
+calibration_parameters:
+  cal_data_dir: '/home/users/fa.fu/work/work_dirs/yoloworld-x5/calibration_data/calibration_data_rgb_20241120'
+  cal_data_type: 'float32'
+  preprocess_on: False
+  calibration_type: 'max'
+  max_percentile: 0.99995
+  optimization: 'set_all_nodes_int16;'
+  
+
+compiler_parameters:
+  compile_mode: 'latency'
+  debug: False
+  optimize_level: 'O3'
+  jobs: 32
