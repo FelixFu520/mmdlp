@@ -1,0 +1,11 @@
+```
+# 代理
+export https_proxy=http://10.112.12.231:7890 http_proxy=http://10.112.12.231:7890 all_proxy=socks5://10.112.12.231:7890
+
+pip install mmengine==0.10.3 
+pip install mmcv==2.0.1 -f https://download.openmmlab.com/mmcv/dist/cu116/torch1.13/index.html
+pip install mmdet==3.0.0 mmyolo==0.6.0 mmsegmentation==1.2.2
+pip install numpy==1.23.0 supervision==0.16.0
+pip install transformers==4.36.2
+
+```
