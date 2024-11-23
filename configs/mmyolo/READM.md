@@ -1,1 +1,0 @@
-从mmyolo v0.6.0 的configs中 拷贝过来
