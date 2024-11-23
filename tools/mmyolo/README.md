@@ -90,3 +90,50 @@ PYTHONPATH=/root/mmdlp/tools/mmyolo python /root/mmdlp/tools/mmyolo/projects/eas
     --device cpu \
     --out-dir /root/data/work_dirs/yolov5_s-v61_fast_1xb12-40e_cat/infer_onnx_image.jpg
 ```
+
+## 实例分割示例
+https://mmyolo.readthedocs.io/zh-cn/dev/get_started/15_minutes_instance_segmentation.html#
+
+```
+# 1. 训练
+python /usr/local/lib/python3.8/dist-packages/mmyolo/.mim/tools/misc/download_dataset.py \
+    --dataset-name balloon \
+    --save-dir /root/data/datasets/balloon/data \
+    --unzip \
+    --delete
+
+
+cd /root/data/datasets/balloon && python /root/mmdlp/tools/mmyolo/balloon2coco.py
+
+python /usr/local/lib/python3.8/dist-packages/mmyolo/.mim/tools/train.py \
+    /root/mmdlp/configs/yolov5/yolov5_ins_s-v61_syncbn_fast_8xb16-300e_balloon_instance.py \
+    --work-dir /root/data/work_dirs/yolov5_ins_s-v61_syncbn_fast_8xb16-300e_balloon_instance
+
+tensorboard --logdir=/root/data/work_dirs/yolov5_ins_s-v61_syncbn_fast_8xb16-300e_balloon_instance
+
+# 2. 验证
+python /usr/local/lib/python3.8/dist-packages/mmyolo/.mim/tools/test.py \
+    /root/mmdlp/configs/yolov5/yolov5_ins_s-v61_syncbn_fast_8xb16-300e_balloon_instance.py \
+    /root/data/work_dirs/yolov5_ins_s-v61_syncbn_fast_8xb16-300e_balloon_instance/epoch_300.pth \
+    --work-dir /root/data/work_dirs/yolov5_ins_s-v61_syncbn_fast_8xb16-300e_balloon_instance \
+    --show-dir show_results
+
+python /root/mmdlp/tools/mmyolo/featmap_vis_demo.py \
+    /root/data/datasets/balloon/data/balloon/train/3927754171_9011487133_b.jpg \
+    /root/mmdlp/configs/yolov5/yolov5_ins_s-v61_syncbn_fast_8xb16-300e_balloon_instance.py \
+    /root/data/work_dirs/yolov5_ins_s-v61_syncbn_fast_8xb16-300e_balloon_instance/epoch_300.pth \
+    --target-layers backbone \
+    --channel-reduction squeeze_mean \
+    --out-dir /root/data/work_dirs/yolov5_ins_s-v61_syncbn_fast_8xb16-300e_balloon_instance/featmap_vis_output
+
+
+python /root/mmdlp/tools/mmyolo/featmap_vis_demo.py \
+    /root/data/datasets/balloon/data/balloon/train/3927754171_9011487133_b.jpg \
+    /root/mmdlp/configs/yolov5/yolov5_ins_s-v61_syncbn_fast_8xb16-300e_balloon_instance.py \
+    /root/data/work_dirs/yolov5_ins_s-v61_syncbn_fast_8xb16-300e_balloon_instance/epoch_300.pth \
+    --target-layers neck \
+    --channel-reduction squeeze_mean \
+    --out-dir /root/data/work_dirs/yolov5_ins_s-v61_syncbn_fast_8xb16-300e_balloon_instance/featmap_vis_output
+
+
+```
