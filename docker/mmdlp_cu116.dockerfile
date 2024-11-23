@@ -17,6 +17,7 @@ RUN apt update && apt install python3 python3-pip -y && \
     pip3 install --upgrade pip && \
     pip3 install torch==1.13.1+cu116 torchvision==0.14.1+cu116 torchaudio==0.13.1 --extra-index-url https://download.pytorch.org/whl/ -i https://pypi.tuna.tsinghua.edu.cn/simple && \
     pip3 install mmengine==0.10.5 -i https://pypi.tuna.tsinghua.edu.cn/simple && \
+    pip3 install openmim -i https://pypi.tuna.tsinghua.edu.cn/simple && \
     pip3 install mmcv==2.0.1 -f https://download.openmmlab.com/mmcv/dist/cu116/torch1.13/index.html && \
     pip3 install mmdet==3.0.0 mmyolo==0.6.0 mmsegmentation==1.2.2 mmpretrain==1.2.0 -i https://pypi.tuna.tsinghua.edu.cn/simple && \
     pip3 install torch-pruning==1.4.3 onnx==1.17.0 onnxruntime==1.16.2 onnxsim==0.4.36 -i https://pypi.tuna.tsinghua.edu.cn/simple && \
