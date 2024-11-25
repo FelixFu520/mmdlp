@@ -142,7 +142,7 @@ if __name__ == "__main__":
                         default="/home/users/fa.fu/work/work_dirs/dosod/demo_images/infer_for_shiyuan/img_baihe_wuzi",
                         help="image path")
     parser.add_argument("--result_dir", type=str, 
-                        default="/home/users/fa.fu/work/work_dirs/dosod/demo_images/infer_for_shiyuan/result",
+                        default="/home/users/fa.fu/work/work_dirs/dosod/demo_images/infer_for_shiyuan/result2",
                         help="result dir")
     parser.add_argument("--height", type=int,
                         default=672,
