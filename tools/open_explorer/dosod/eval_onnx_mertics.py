@@ -75,13 +75,23 @@ def bbox_post_process(results: InstanceData,
 
         if with_nms and results.bboxes.numel() > 0:
             bboxes = get_box_tensor(results.bboxes)
+            
+            # 检查是否启用类别无关的 NMS
+            if cfg.class_agnostic:
+                # print("cfg.class_agnostic:", cfg.class_agnostic)
+                # 类别无关的 NMS，将所有 labels 设置为 0
+                labels = torch.zeros_like(results.labels)
+            else:
+                # 类别相关的 NMS，使用原始的 labels
+                labels = results.labels
+
             keep_idxs = batched_nms(bboxes, results.scores,
-                                    results.labels, 
+                                    # results.labels, 
+                                    labels,
                                     iou_threshold=cfg.iou_threshold)
             results = results[keep_idxs]
             results = results[:cfg.max_per_img]
         return results
-
 
 
 class DictToClass:
@@ -276,16 +286,18 @@ if __name__ == "__main__":
 
     
     # TODO: Eval 时这里的参数配置
-    iou_threshold = 0.7
+    iou_threshold = 0.4
 
     max_dets=300
 
+    class_agnostic = True
     cfg = {'multi_label': True, 
            'nms_pre': 30000, 
             'score_thr': 0.001, 
             'iou_threshold': iou_threshold,
             'max_per_img': max_dets,
             "yolox_style": False,
+            "class_agnostic": class_agnostic,
             "min_bbox_size": -1}
     
     device = "cuda:1"
