@@ -57,7 +57,7 @@ batch_shapes_cfg = None
 close_mosaic_epochs = 10
 coco_train_dataset = dict(
     _delete_=True,
-    class_text_path='data/texts/kxj_class_texts_1021.json',
+    class_text_path='/home/fa.fu/work/horizon/YOLO-World-dosod/data/texts/kxj_class_texts_1021.json',
     dataset=dict(
         ann_file='real_virtual_resize_coco_jpg_20241113.json',
         data_prefix=dict(img=''),
@@ -180,7 +180,7 @@ coco_train_dataset = dict(
     type='MultiModalDataset')
 coco_val_dataset = dict(
     _delete_=True,
-    class_text_path='data/texts/kxj_class_texts_1021.json',
+    class_text_path='/home/fa.fu/work/horizon/YOLO-World-dosod/data/texts/kxj_class_texts_1021.json',
     dataset=dict(
         ann_file='real_resize_coco_jpg_20241103.json',
         data_prefix=dict(img=''),
@@ -607,7 +607,7 @@ test_cfg = dict(type='TestLoop')
 test_dataloader = dict(
     batch_size=1,
     dataset=dict(
-        class_text_path='data/texts/kxj_class_texts_1021.json',
+        class_text_path='/home/fa.fu/work/horizon/YOLO-World-dosod/data/texts/kxj_class_texts_1021.json',
         dataset=dict(
             ann_file='real_resize_coco_jpg_20241103.json',
             data_prefix=dict(img=''),
@@ -738,7 +738,7 @@ train_dataloader = dict(
     batch_size=12,
     collate_fn=dict(type='yolow_collate'),
     dataset=dict(
-        class_text_path='data/texts/kxj_class_texts_1021.json',
+        class_text_path='/home/fa.fu/work/horizon/YOLO-World-dosod/data/texts/kxj_class_texts_1021.json',
         dataset=dict(
             ann_file='real_virtual_resize_coco_jpg_20241113.json',
             data_prefix=dict(img=''),
@@ -1143,7 +1143,7 @@ val_data_prefix = 'val2017/'
 val_dataloader = dict(
     batch_size=1,
     dataset=dict(
-        class_text_path='data/texts/kxj_class_texts_1021.json',
+        class_text_path='/home/fa.fu/work/horizon/YOLO-World-dosod/data/texts/kxj_class_texts_1021.json',
         dataset=dict(
             ann_file='real_resize_coco_jpg_20241103.json',
             data_prefix=dict(img=''),
