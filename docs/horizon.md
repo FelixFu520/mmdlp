@@ -1,10 +1,5 @@
 ## 开发环境
 将oe和mm系列合并, 用于开发环境, 基于`hub.hobot.cc/aitools/ai_toolchain_ubuntu_20_x5_gpu:v1.2.8`镜像
-
-```
-# 代理
-```
-
 ```
 docker run --name tt -itd hub.hobot.cc/aitools/ai_toolchain_ubuntu_20_x5_gpu:v1.2.8
 docker exec -it tt bash
