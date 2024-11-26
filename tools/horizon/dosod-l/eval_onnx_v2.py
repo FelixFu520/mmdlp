@@ -10,16 +10,16 @@ from mmdet.models.utils import (multi_apply, unpack_gt_instances,
                                 filter_scores_and_topk)
 from mmdet.structures.bbox import (cat_boxes, get_box_tensor, get_box_wh,
                                    scale_boxes)
-# from mmcv.ops import batched_nms
-from torchvision.ops import nms, batched_nms
-import argparse
+
+from torchvision.ops import batched_nms
+
 from typing import List, Optional, Tuple
 from tqdm import tqdm
 import os
 import json
 import numpy as np
 import torch
-
+import pickle
 
 
 def bbox_post_process(results: InstanceData,
@@ -75,7 +75,7 @@ def bbox_post_process(results: InstanceData,
 
         if with_nms and results.bboxes.numel() > 0:
             bboxes = get_box_tensor(results.bboxes)
-            
+
             # 检查是否启用类别无关的 NMS
             if cfg.class_agnostic:
                 # print("cfg.class_agnostic:", cfg.class_agnostic)
@@ -94,13 +94,16 @@ def bbox_post_process(results: InstanceData,
         return results
 
 
+
 class DictToClass:
     def __init__(self, data):
         for key, value in data.items():
             setattr(self, key, value)
 
 
-def coco_eval(data_dir, ann_file, classes, img_scale, data_prefix, pred_npy_dir, cfg, device = "cuda:0"):
+def coco_eval(classes, img_scale, pred_npy_dir, cfg,
+              data_root, ann_file, class_text_path,
+              device = "cuda:0"):
 
     # Define the data transformations
     transforms = [
@@ -115,7 +118,7 @@ def coco_eval(data_dir, ann_file, classes, img_scale, data_prefix, pred_npy_dir,
 
     # Create the base dataset
     base_dataset = YOLOv5CocoDataset(
-        data_root=data_dir,
+        data_root=data_root,
         ann_file=ann_file,
         data_prefix=dict(img=''),
         filter_cfg=dict(filter_empty_gt=False, min_size=32),
@@ -130,7 +133,7 @@ def coco_eval(data_dir, ann_file, classes, img_scale, data_prefix, pred_npy_dir,
     # Wrap the base dataset with MultiModalDataset
     coco_val_dataset = MultiModalDataset(
         dataset=base_dataset,
-        class_text_path=os.path.join("/horizon-bucket/d-robotics-bucket/fa.fu/dosod-l/texts", "kxj_class_texts_1021.json"),
+        class_text_path=class_text_path,
         pipeline=transforms
     )
 
@@ -139,7 +142,7 @@ def coco_eval(data_dir, ann_file, classes, img_scale, data_prefix, pred_npy_dir,
 
     # Initialize the evaluator
     val_evaluator = CocoMetric(
-        ann_file=os.path.join(data_dir, ann_file),
+        ann_file=os.path.join(data_root, ann_file),
         metric='bbox',
         classwise=True
     )
@@ -162,13 +165,16 @@ def coco_eval(data_dir, ann_file, classes, img_scale, data_prefix, pred_npy_dir,
         img_path = batch_img_metas.img_path
         img_shape = batch_img_metas.img_shape
         base_name = os.path.basename(img_path).replace(".jpg", "")
-        # print("**** base_name:", base_name)
+        print("**** base_name:", base_name)
         ori_shape = batch_img_metas.ori_shape
         scale_factor = batch_img_metas.scale_factor
         pad_param = batch_img_metas.pad_param
+        # TODO:
         onnx_out_dir = os.path.join(pred_npy_dir, base_name) 
+        
         scores_np = np.load(onnx_out_dir + "/cls_scores.npy")
         bboxes_np = np.load(onnx_out_dir + "/bbox_preds.npy")
+
         flatten_cls_scores = torch.from_numpy(scores_np).to(device)
         flatten_decoded_bboxes = torch.from_numpy(bboxes_np).to(device) 
         
@@ -237,7 +243,7 @@ def coco_eval(data_dir, ann_file, classes, img_scale, data_prefix, pred_npy_dir,
             results.bboxes[:, 0::2].clamp_(0, ori_shape[1])
             results.bboxes[:, 1::2].clamp_(0, ori_shape[0])
 
-             # Create data_sample as a dictionary, and include metainfo
+            # Create data_sample as a dictionary, and include metainfo
             data_sample = {
                 'pred_instances': results,
                 'ori_shape': ori_shape,
@@ -247,27 +253,76 @@ def coco_eval(data_dir, ann_file, classes, img_scale, data_prefix, pred_npy_dir,
             }
 
             results_list.append(data_sample)
-
+    
+    # Save the results_list as a pkl file
+    gt_anno_path = os.path.join(data_root, ann_file)
+    save_pkl(gt_anno_path, results_list)
+    
     print("*** results_list:", len(results_list))
     test_evaluator.process({}, results_list)
     size = len(test_dataloader)
     eval_results = test_evaluator.evaluate(size=size)
     print(eval_results)
 
+def save_pkl(gt_anno_path, pred_results):
+    gt_json_data = json.load(open(gt_anno_path, 'r'))
+    pkl_list = []
+    for idx, pred_result in enumerate(pred_results):
+        img_id = pred_result['img_id']
+        assert img_id == gt_json_data['images'][idx]['id']
+        
+        gt_instances = load_img_gt_instance(img_id, gt_json_data)
+        
+        pred_instances = pred_result['pred_instances']
+        bboxes = pred_instances.bboxes.cpu()
+        scores = pred_instances.scores.cpu()
+        labels = pred_instances.labels.cpu()
+        pred_instances = {
+            'bboxes': bboxes,
+            'scores': scores,
+            'labels': labels
+        }
+        
+        pkl_list.append({
+            'img_id': img_id,
+            'ori_shape': pred_result['ori_shape'],
+            'img_shape': pred_result['img_shape'],
+            'pred_instances': pred_instances,
+            'texts': classes,
+            'gt_instances': gt_instances
+        })
+
+    with open('test.pkl', 'wb') as f:
+        pickle.dump(pkl_list, f)
+
+
+def load_img_gt_instance(img_id, data):
+    '''加载单张图片的gt instance'''
+    bboxes = []
+    labels = []
+    for anno in data['annotations']:
+        if anno['image_id'] == img_id:
+            
+            coco_bbox = anno['bbox']
+            xmin = coco_bbox[0]
+            ymin = coco_bbox[1]
+            xmax = coco_bbox[0] + coco_bbox[2]
+            ymax = coco_bbox[1] + coco_bbox[3]
+            
+
+            bboxes.append([xmin, ymin, xmax, ymax])
+            labels.append(anno['category_id'])
+
+    bboxes_tensor = torch.tensor(bboxes, dtype=torch.float32) if bboxes else torch.empty((0, 4), dtype=torch.float32)
+    labels_tensor = torch.tensor(labels, dtype=torch.int64) if labels else torch.empty((0,), dtype=torch.int64)
+    gt_instances = {
+        'bboxes': bboxes_tensor,
+        'labels': labels_tensor
+    }
+    return gt_instances
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='COCO Evaluation')
-    parser.add_argument('--pred_npy_dir', type=str, default="/home/users/fa.fu/work/work_dirs/dosod/20241103/eval_quant", help='The directory of the prediction numpy files')
-    parser.add_argument('--data_dir', type=str, default="/home/users/fa.fu/work/data/dosod_eval_dataset/", help='The directory of the dataset')
-    parser.add_argument('--ann_file', type=str, default="real_resize_coco_jpg_20241103.json", help='The annotation file of the dataset')
-    parser.add_argument("--height", type=int,
-                        default=640,
-                        help="height")
-    parser.add_argument("--width", type=int,
-                        default=640,
-                        help="width")
-    args = parser.parse_args()
 
     classes = (
                 'liquid stain',
@@ -277,29 +332,48 @@ if __name__ == "__main__":
                 'solid stain',
     )
     # Define image scale
-    img_scale = (args.width, args.height)  
+    # img_scale = (640, 640)  
+    img_scale = (896, 672)
 
-    data_prefix = ''
     # TODO: 修改为 quantized.onnx 跑出来的结果路径 
-    # pred_npy_dir = "/home/users/fa.fu/work/work_dirs/dosod/20241103/eval_float"
-    pred_npy_dir = args.pred_npy_dir
 
-    
-    # TODO: Eval 时这里的参数配置
+    # pro_dir = "/home/users/junjun.zhao/github/YOLO-World/DOSOD_L_PRO/test/"
+    # # hb_out = "hbcali_DOSOD_L_without_nms_v4_fm"
+    # hb_out = "hbopt_DOSOD_L_without_nms_v4_fm"
+    # pred_npy_dir = os.path.join(pro_dir, hb_out)
+
+    pred_npy_dir = "/home/users/shiyuan.chen/YOLO-World-dosod/scripts/onnx_eval/float_onnx_output"
+
+    data_root = '/home/users/shiyuan.chen/YOLO-world-dosod-dataset/reinjection_stain_dataset'
+    ann_file='real_resize_coco_jpg.json' 
+    class_text_path='/home/users/shiyuan.chen/YOLO-World-dosod/data/texts/kxj_class_texts_1021.json'
+
+    iou_threshold = 0.4
+
+    max_dets=300
+    score_thr = 0.001
+
+    # nms这里设置iou阈值0.4，开了class_agnostic
+    # model_test_cfg = dict(
+    #     max_per_img=300,
+    #     multi_label=True,
+    #     nms=dict(class_agnostic=True, iou_threshold=0.4, type='nms'),
+    #     nms_pre=30000,
+    #     score_thr=0.001)
+
+    class_agnostic = True
     cfg = {'multi_label': True, 
            'nms_pre': 30000, 
-            'score_thr': 0.001, 
-            'iou_threshold':  0.4,
-            'max_per_img': 300,
+            'score_thr': score_thr, 
+            'iou_threshold': iou_threshold,
+            'max_per_img': max_dets,
             "yolox_style": False,
-            "class_agnostic": True,
+            "class_agnostic": class_agnostic,
             "min_bbox_size": -1}
     
     device = "cuda:1"
     
-    data_dir = args.data_dir
-    ann_file = args.ann_file
-    coco_eval(data_dir, ann_file, classes, img_scale, data_prefix, pred_npy_dir, cfg, device)
+    coco_eval(classes, img_scale, pred_npy_dir, cfg, data_root, ann_file, class_text_path, device)
 
 
 
