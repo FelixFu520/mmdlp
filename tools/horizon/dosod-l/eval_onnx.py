@@ -19,7 +19,7 @@ import os
 import json
 import numpy as np
 import torch
-
+import pickle
 
 
 def bbox_post_process(results: InstanceData,
@@ -248,12 +248,73 @@ def coco_eval(data_dir, ann_file, classes, img_scale, data_prefix, pred_npy_dir,
 
             results_list.append(data_sample)
 
+        
+    # Save the results_list as a pkl file
+    gt_anno_path = os.path.join(data_dir, ann_file)
+    save_pkl(gt_anno_path, results_list)
+    
     print("*** results_list:", len(results_list))
     test_evaluator.process({}, results_list)
     size = len(test_dataloader)
     eval_results = test_evaluator.evaluate(size=size)
     print(eval_results)
 
+
+def save_pkl(gt_anno_path, pred_results):
+    gt_json_data = json.load(open(gt_anno_path, 'r'))
+    pkl_list = []
+    for idx, pred_result in enumerate(pred_results):
+        img_id = pred_result['img_id']
+        assert img_id == gt_json_data['images'][idx]['id']
+        
+        gt_instances = load_img_gt_instance(img_id, gt_json_data)
+        
+        pred_instances = pred_result['pred_instances']
+        bboxes = pred_instances.bboxes.cpu()
+        scores = pred_instances.scores.cpu()
+        labels = pred_instances.labels.cpu()
+        pred_instances = {
+            'bboxes': bboxes,
+            'scores': scores,
+            'labels': labels
+        }
+        
+        pkl_list.append({
+            'img_id': img_id,
+            'ori_shape': pred_result['ori_shape'],
+            'img_shape': pred_result['img_shape'],
+            'pred_instances': pred_instances,
+            'texts': classes,
+            'gt_instances': gt_instances
+        })
+
+    with open('test.pkl', 'wb') as f:
+        pickle.dump(pkl_list, f)
+
+def load_img_gt_instance(img_id, data):
+    '''加载单张图片的gt instance'''
+    bboxes = []
+    labels = []
+    for anno in data['annotations']:
+        if anno['image_id'] == img_id:
+            
+            coco_bbox = anno['bbox']
+            xmin = coco_bbox[0]
+            ymin = coco_bbox[1]
+            xmax = coco_bbox[0] + coco_bbox[2]
+            ymax = coco_bbox[1] + coco_bbox[3]
+            
+
+            bboxes.append([xmin, ymin, xmax, ymax])
+            labels.append(anno['category_id'])
+
+    bboxes_tensor = torch.tensor(bboxes, dtype=torch.float32) if bboxes else torch.empty((0, 4), dtype=torch.float32)
+    labels_tensor = torch.tensor(labels, dtype=torch.int64) if labels else torch.empty((0,), dtype=torch.int64)
+    gt_instances = {
+        'bboxes': bboxes_tensor,
+        'labels': labels_tensor
+    }
+    return gt_instances
 
 
 if __name__ == "__main__":

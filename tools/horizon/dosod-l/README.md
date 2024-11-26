@@ -47,7 +47,27 @@ PYTHONPATH=/home/fa.fu/work/mmdlp/ python3 /home/fa.fu/work/mmdlp/tools/horizon/
     --height 672 \
     --width 896
 
-# 验证召回率
+# 验证召回率 pth
+PYTHONPATH=/home/fa.fu/work/horizon/YOLO-World-dosod:/home/fa.fu/work/horizon/YOLO-World-dosod/mmdetection python3 /home/fa.fu/work/horizon/YOLO-World-dosod/tools/test.py \
+    /home/fa.fu/work/horizon/YOLO-World-dosod/configs/kexuejia_1113/joint_space_mlp3x_l_40e_8gpus_finetune_kxj_1113_sjt_generated_motionblur_1024p_science.py  \
+    /home/fa.fu/work/work_dirs/horizon/dosod-l/dosod-l_epoch_40_kxj_motionblur_20241113_1024x1024_672x896.pth \
+    --work-dir /home/fa.fu/work/work_dirs/horizon/dosod-l/joint_space_mlp3x_l_40e_8gpus_finetune_kxj_1113_sjt_generated_motionblur_1024p \
+    --out /home/fa.fu/work/work_dirs/horizon/dosod-l/joint_space_mlp3x_l_40e_8gpus_finetune_kxj_1113_sjt_generated_motionblur_1024p/pth5.pkl
 python3 /home/fa.fu/work/mmdlp/tools/horizon/dosod-l/pr_curve_kexuejia_test.py
 
+# 验证召回率 onnx
+PYTHONPATH=/home/fa.fu/work/mmdlp python3 /home/fa.fu/work/mmdlp/tools/horizon/dosod-l/infer_images_onnx.py \
+    --data_dir /horizon-bucket/d-robotics-bucket/fa.fu/dosod-l/reinjection_stain_dataset/real_resize_jpg_data \
+    --onnx_float_path /home/fa.fu/work/work_dirs/horizon/dosod-l/dosod-l_epoch_40_kxj_rep-without-nms_motionblur_20241113_1024x1024_672x896.onnx \
+    --save_dir_float /home/fa.fu/work/work_dirs/horizon/dosod-l/demo_images_result/float_npy_reinjection \
+    --show_dir eval_result_show_float_data_reinjection \
+    --height 672 \
+    --width 896
+PYTHONPATH=/home/fa.fu/work/mmdlp/ python3 /home/fa.fu/work/mmdlp/tools/horizon/dosod-l/eval_onnx.py \
+    --data_dir /horizon-bucket/d-robotics-bucket/fa.fu/dosod-l/reinjection_stain_dataset \
+    --ann_file real_resize_coco_jpg.json \
+    --pred_npy_dir /home/fa.fu/work/work_dirs/horizon/dosod-l/demo_images_result/float_npy_reinjection \
+    --height 672 \
+    --width 896
+python3 /home/fa.fu/work/mmdlp/tools/horizon/dosod-l/pr_curve_kexuejia_test.py
 ```

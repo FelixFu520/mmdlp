@@ -129,7 +129,8 @@ if __name__ == '__main__':
     import json
     import csv
     pickle_paths = [
-        "/home/fa.fu/work/work_dirs/horizon/dosod-l/joint_space_mlp3x_l_40e_8gpus_finetune_kxj_1113_sjt_generated_motionblur_1024p/pth5.pkl"
+        "/home/fa.fu/work/work_dirs/horizon/dosod-l/joint_space_mlp3x_l_40e_8gpus_finetune_kxj_1113_sjt_generated_motionblur_1024p/pth5.pkl",
+        "/home/fa.fu/work/work_dirs/horizon/dosod-l/joint_space_mlp3x_l_40e_8gpus_finetune_kxj_1113_sjt_generated_motionblur_1024p/test.pkl"
         # "/home/fa.fu/work/work_dirs/horizon/dosod-l/joint_space_mlp3x_l_40e_8gpus_finetune_kxj_1113_sjt_generated_motionblur_1024p/joint_space_mlp3x_l_40e_8gpus_finetune_kxj_1113_sjt_generated_motionblur_1024p_science.pkl"
 
     ]
@@ -137,6 +138,7 @@ if __name__ == '__main__':
     
     name_paths = [
         '1113_1024p_896p',
+        "1113_1024p_896p_onnx"
         ]
 
     save_dir = '/home/fa.fu/work/work_dirs/horizon/dosod-l/pr'
