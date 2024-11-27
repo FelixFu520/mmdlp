@@ -2,7 +2,7 @@ model_parameters:
   onnx_model: '/home/fa.fu/work/work_dirs/horizon/dosod-l/20241126/dosod-l_epoch_40_kxj_rep-without-nms_motionblur_20241113_1024x1024_672x896.onnx'
   march: 'bayes-e'
   output_model_file_prefix: 'dosod-l_epoch_40_kxj_rep-without-nms_motionblur_20241113_1024x1024_672x896'
-  working_dir: '/home/fa.fu/work/work_dirs/horizon/dosod-l/20241126/output_v1'
+  working_dir: '/home/fa.fu/work/work_dirs/horizon/dosod-l/20241126/output_v2'
   remove_node_type: 'Quantize;Dequantize;Transpose;Cast;Reshape'
   layer_out_dump: False
   # debug_mode: "dump_calibration_data" 
@@ -23,7 +23,7 @@ input_parameters:
 
 # 校准参数组
 calibration_parameters:
-  cal_data_dir: '/home/fa.fu/work/work_dirs/horizon/dosod-l/calibration_data/calibration_images_75_featuremap_672×896'
+  cal_data_dir: '/home/fa.fu/work/work_dirs/horizon/dosod-l/calibration_data/calibration_images_80_featuremap_672×896'
   cal_data_type: 'float32'
   preprocess_on: False
   # 校准使用的算法类型 default

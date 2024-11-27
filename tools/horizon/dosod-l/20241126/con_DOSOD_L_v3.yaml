@@ -2,7 +2,7 @@ model_parameters:
   onnx_model: '/home/fa.fu/work/work_dirs/horizon/dosod-l/20241126/dosod-l_epoch_40_kxj_rep-without-nms_motionblur_20241113_1024x1024_672x896.onnx'
   march: 'bayes-e'
   output_model_file_prefix: 'dosod-l_epoch_40_kxj_rep-without-nms_motionblur_20241113_1024x1024_672x896'
-  working_dir: '/home/fa.fu/work/work_dirs/horizon/dosod-l/20241126/output_v1'
+  working_dir: '/home/fa.fu/work/work_dirs/horizon/dosod-l/20241126/output_v3'
   remove_node_type: 'Quantize;Dequantize;Transpose;Cast;Reshape'
   layer_out_dump: False
   # debug_mode: "dump_calibration_data" 
@@ -10,15 +10,15 @@ model_parameters:
  
 input_parameters:
   input_name: 'images'
-  input_type_train: 'featuremap'
+  input_type_train: 'rgb'
   input_layout_train: 'NCHW'
   input_shape: '1x3x672x896'
   input_batch: 1
-  # norm_type: 'data_scale'
-  # mean_value: ''
-  # scale_value: 0.003921568627451
-  input_layout_rt: 'NCHW'
-  input_type_rt: 'featuremap'
+  norm_type: 'data_scale'
+  mean_value: ''
+  scale_value: 0.003921568627451
+  input_layout_rt: 'NHWC'
+  input_type_rt: 'nv12'
 
 
 # 校准参数组
