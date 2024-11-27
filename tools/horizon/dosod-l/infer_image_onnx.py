@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import os.path as osp
 from horizon_tc_ui import HB_ONNXRuntime
-from horizon_tc_ui.data.transformer import RGB2YUV444Transformer
+from horizon_tc_ui.data.transformer import RGB2YUV444Transformer, BGR2NV12Transformer, NV12ToYUV444Transformer, RGB2NV12Transformer
 import argparse
 
 from preprocess import preprocess_custom
@@ -39,7 +39,7 @@ def infer_origin_onnx(onnx_model_path: str, image_path: str, result_dir: str = "
         scores = scores.squeeze(0)
         argmax_idx = np.argmax(scores, axis=1).astype(np.int8)
         argmax_scores = scores[np.arange(scores.shape[0]), argmax_idx]
-        indexs = cv2.dnn.NMSBoxes(bboxes, argmax_scores, 0.4, 0.5)
+        indexs = cv2.dnn.NMSBoxes(bboxes, argmax_scores, 0.01, 0.5)
 
         # 画图
         image_show = image_show.transpose(0, 2, 3, 1)
@@ -92,7 +92,7 @@ def infer_calib_onnx(onnx_model_path: str, image_path: str, result_dir: str = ".
         scores = scores.squeeze(0)
         argmax_idx = np.argmax(scores, axis=1).astype(np.int8)
         argmax_scores = scores[np.arange(scores.shape[0]), argmax_idx]
-        indexs = cv2.dnn.NMSBoxes(bboxes, argmax_scores, 0.02, 0.5)
+        indexs = cv2.dnn.NMSBoxes(bboxes, argmax_scores, 0.01, 0.5)
 
         # 画图
         image_show = image_show.transpose(0, 2, 3, 1)
@@ -124,8 +124,13 @@ def infer_quant_onnx(onnx_model_path: str, image_path: str, result_dir: str = ".
     image = image * 255
     image = np.expand_dims(image, axis=0)
     image_show = image.astype(np.uint8)
-    fun_t = RGB2YUV444Transformer(data_format="CHW")
-    input_data = fun_t.run_transform(image[0])
+
+    # fun_t = RGB2YUV444Transformer(data_format="CHW")  # 这个是无损的和板端有区别, 替换成下面完全模拟板端的
+    fun_t1 = RGB2NV12Transformer(data_format="CHW")
+    fun_t2 = NV12ToYUV444Transformer((height, width), yuv444_output_layout="CHW")
+    input_data = fun_t1.run_transform(image[0])
+    input_data = fun_t2.run_transform(input_data)
+
     input_data = input_data[np.newaxis, ...]
     input_data -= 128
     input_data = input_data.astype(np.int8)
@@ -143,7 +148,7 @@ def infer_quant_onnx(onnx_model_path: str, image_path: str, result_dir: str = ".
         scores = scores.squeeze(0)
         argmax_idx = np.argmax(scores, axis=1).astype(np.int8)
         argmax_scores = scores[np.arange(scores.shape[0]), argmax_idx]
-        indexs = cv2.dnn.NMSBoxes(bboxes, argmax_scores, 0.4, 0.5)
+        indexs = cv2.dnn.NMSBoxes(bboxes, argmax_scores, 0.01, 0.5)
 
         # 画图
         image_show = image_show.transpose(0, 2, 3, 1)
