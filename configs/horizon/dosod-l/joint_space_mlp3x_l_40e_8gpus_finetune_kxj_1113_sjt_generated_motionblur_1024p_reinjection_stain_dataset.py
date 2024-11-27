@@ -182,10 +182,10 @@ coco_val_dataset = dict(
     _delete_=True,
     class_text_path='data/texts/kxj_class_texts_1021.json',
     dataset=dict(
-        ann_file='real_resize_coco_jpg_20241103.json',
+        ann_file='real_resize_coco_jpg.json',
         data_prefix=dict(img=''),
         data_root=
-        '/horizon-bucket/d-robotics-bucket/AIOT_algorithm_data/test_stain_dataset',
+        '/horizon-bucket/d-robotics-bucket/fa.fu/dosod-l/reinjection_stain_dataset',
         filter_cfg=dict(filter_empty_gt=False, min_size=32),
         metainfo=dict(
             classes=(
@@ -609,10 +609,10 @@ test_dataloader = dict(
     dataset=dict(
         class_text_path='data/texts/kxj_class_texts_1021.json',
         dataset=dict(
-            ann_file='real_resize_coco_jpg_20241103.json',
+            ann_file='real_resize_coco_jpg.json',
             data_prefix=dict(img=''),
             data_root=
-            '/horizon-bucket/d-robotics-bucket/AIOT_algorithm_data/test_stain_dataset',
+            '/horizon-bucket/d-robotics-bucket/fa.fu/dosod-l/reinjection_stain_dataset',
             filter_cfg=dict(filter_empty_gt=False, min_size=32),
             metainfo=dict(
                 classes=(
@@ -659,7 +659,7 @@ test_dataloader = dict(
     sampler=dict(shuffle=False, type='DefaultSampler'))
 test_evaluator = dict(
     ann_file=
-    '/horizon-bucket/d-robotics-bucket/AIOT_algorithm_data/test_stain_dataset/real_resize_coco_jpg_20241103.json',
+    '/horizon-bucket/d-robotics-bucket/fa.fu/dosod-l/reinjection_stain_dataset/real_resize_coco_jpg.json',
     classwise=True,
     metric='bbox',
     pr_plot=True,
