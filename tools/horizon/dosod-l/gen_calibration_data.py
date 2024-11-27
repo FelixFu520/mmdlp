@@ -44,6 +44,8 @@ if __name__ == "__main__":
     parser.add_argument("--width", type=int,
                         default=896,
                         help="width")
+    parser.add_argument('--mode', type=str, default="featuremap")
     args = parser.parse_args()
 
-    gen_calibration_data_featuremap(args.data_dir, args.save_dir, height=args.height, width=args.width)
+    if args.mode == "featuremap":
+        gen_calibration_data_featuremap(args.data_dir, args.save_dir, height=args.height, width=args.width)
