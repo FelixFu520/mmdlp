@@ -89,7 +89,7 @@ def eval_float_onnx(onnx_float_path, image_path, save_dir, height=1024, width=20
         os.makedirs(os.path.dirname(dst_path), exist_ok=True)
         cv2.imwrite(dst_path, image_show)
 
-def eval_quant_onnx(onnx_quant_path, image_path, save_dir, height=1024, width=2048, show_dir = "eval_result_show"):
+def eval_quant_onnx(onnx_quant_path, image_path, save_dir, height=1024, width=2048, show_dir = "eval_result_show", lossy=False):
     os.makedirs(save_dir, exist_ok=True)
 
     # model
@@ -108,12 +108,14 @@ def eval_quant_onnx(onnx_quant_path, image_path, save_dir, height=1024, width=20
     image = np.expand_dims(image, axis=0)
     image_show = image.astype(np.uint8)
     
-    # fun_t = RGB2YUV444Transformer(data_format="CHW")  # 这个是无损的和板端有区别, 替换成下面完全模拟板端的
-    # input_data = fun_t.run_transform(image[0])
-    fun_t1 = RGB2NV12Transformer(data_format="CHW")
-    fun_t2 = NV12ToYUV444Transformer((height, width), yuv444_output_layout="CHW")
-    input_data = fun_t1.run_transform(image[0])
-    input_data = fun_t2.run_transform(input_data)
+    if not lossy:
+        fun_t = RGB2YUV444Transformer(data_format="CHW")  # 这个是无损的和板端有区别, 替换成下面完全模拟板端的
+        input_data = fun_t.run_transform(image[0])
+    else:
+        fun_t1 = RGB2NV12Transformer(data_format="CHW")
+        fun_t2 = NV12ToYUV444Transformer((height, width), yuv444_output_layout="CHW")
+        input_data = fun_t1.run_transform(image[0])
+        input_data = fun_t2.run_transform(input_data)
 
     input_data = input_data[np.newaxis, ...]
     input_data -= 128
@@ -337,14 +339,15 @@ def eval_all_onnx(
         onnx_quant_featuremap_path, save_dir_quant_featuremap,
         save_dir_float, save_dir_quant, save_dir_calib,
         height=1024, width=2048, 
-        show_dir = "eval_result_show"
+        show_dir = "eval_result_show",
+        lossy=False
         ):
     if onnx_float_path:
         eval_float_onnx(onnx_float_path, image_path, save_dir_float, height=height, width=width, show_dir=show_dir)
     if onnx_calib_path:
         eval_calib_onnx(onnx_calib_path, image_path, save_dir_calib, height=height, width=width, show_dir=show_dir)
     if onnx_quant_path:
-        eval_quant_onnx(onnx_quant_path, image_path, save_dir_quant, height=height, width=width, show_dir=show_dir)
+        eval_quant_onnx(onnx_quant_path, image_path, save_dir_quant, height=height, width=width, show_dir=show_dir, lossy=lossy)
     if onnx_calib_featuremap_path:
         eval_calib_onnx_featuremap(onnx_calib_featuremap_path, image_path, save_dir_calib_featuremap, height=height, width=width, show_dir=show_dir)
     if onnx_quant_featuremap_path:
@@ -391,6 +394,7 @@ if __name__ == "__main__":
     parser.add_argument("--width", type=int,
                         default=640,
                         help="width")
+    parser.add_argument('--lossy', action='store_true', help='lossy')
     args = parser.parse_args()
 
     # 所有数据迭代器
@@ -419,8 +423,9 @@ if __name__ == "__main__":
     #                   onnx_quant_featuremap_path, save_dir_quant_featuremap,
     #                   save_dir_float, save_dir_quant, save_dir_calib,
     #                   height=args.height, width=args.width, 
-    #                   show_dir=args.show_dir)
+    #                   show_dir=args.show_dir, lossy=args.lossy)
     
+    print(f"lossy quant is `{args.lossy}`")
     # 使用with语句确保进程池正确关闭
     with ProcessPoolExecutor(max_workers=32) as executor:
         for image_path in tqdm(all_val_images_path, desc="evaluating"):
@@ -430,4 +435,4 @@ if __name__ == "__main__":
                             onnx_calib_featuremap_path, save_dir_calib_featuremap,
                             onnx_quant_featuremap_path, save_dir_quant_featuremap,
                             save_dir_float, save_dir_quant, save_dir_calib,
-                            height=args.height, width=args.width, show_dir=args.show_dir)
+                            height=args.height, width=args.width, show_dir=args.show_dir, lossy=args.lossy)

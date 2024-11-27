@@ -108,7 +108,7 @@ def infer_calib_onnx(onnx_model_path: str, image_path: str, result_dir: str = ".
         os.makedirs(os.path.dirname(dst_path), exist_ok=True)
         cv2.imwrite(dst_path, image_show)
 
-def infer_quant_onnx(onnx_model_path: str, image_path: str, result_dir: str = "./", height:int=512, width:int = 1024):
+def infer_quant_onnx(onnx_model_path: str, image_path: str, result_dir: str = "./", height:int=512, width:int = 1024, lossy=False):
     # model
     sess = HB_ONNXRuntime(model_file=onnx_model_path)
     input_names = [input.name for input in sess.get_inputs()]
@@ -125,12 +125,14 @@ def infer_quant_onnx(onnx_model_path: str, image_path: str, result_dir: str = ".
     image = np.expand_dims(image, axis=0)
     image_show = image.astype(np.uint8)
 
-    # fun_t = RGB2YUV444Transformer(data_format="CHW")  # 这个是无损的和板端有区别, 替换成下面完全模拟板端的
-    # input_data = fun_t.run_transform(image[0])
-    fun_t1 = RGB2NV12Transformer(data_format="CHW")
-    fun_t2 = NV12ToYUV444Transformer((height, width), yuv444_output_layout="CHW")
-    input_data = fun_t1.run_transform(image[0])
-    input_data = fun_t2.run_transform(input_data)
+    if not lossy:
+        fun_t = RGB2YUV444Transformer(data_format="CHW")  # 这个是无损的和板端有区别, 替换成下面完全模拟板端的
+        input_data = fun_t.run_transform(image[0])
+    else:
+        fun_t1 = RGB2NV12Transformer(data_format="CHW")
+        fun_t2 = NV12ToYUV444Transformer((height, width), yuv444_output_layout="CHW")
+        input_data = fun_t1.run_transform(image[0])
+        input_data = fun_t2.run_transform(input_data)
 
     input_data = input_data[np.newaxis, ...]
     input_data -= 128
@@ -186,6 +188,7 @@ if __name__ == "__main__":
     parser.add_argument("--width", type=int,
                         default=896,
                         help="width")
+    parser.add_argument('--lossy', action='store_true', help='lossy')
     parser.add_argument('--mode', type=str, default="origin")
     args = parser.parse_args()
 
@@ -221,4 +224,5 @@ if __name__ == "__main__":
             result_dir=osp.join(result_dir, osp.basename(onnx_model_path)[:-5]),
             height=args.height,
             width=args.width,
+            lossy=args.lossy
         )
