@@ -33,7 +33,6 @@ def collect_val_data_list(datasets_dir: str):
         images_paths.append(image_path)
     return images_paths
 
-
 def eval_float_onnx(onnx_float_path, image_path, save_dir, height=1024, width=2048, show_dir = "eval_result_show"):
     os.makedirs(save_dir, exist_ok=True)
 
@@ -100,7 +99,7 @@ def eval_quant_onnx(onnx_quant_path, image_path, save_dir, height=1024, width=20
 
     # image
     # 因为量化后的onnx会在onnx的开始插入nv12转rgb的操作，而我们输入的数据是rgb，所以这里需要转换下
-    image = preprocess_image(
+    image = preprocess_custom(
         image_path, 
         height=height, 
         width=width,
@@ -163,7 +162,7 @@ def eval_calib_onnx(onnx_calib_path, image_path, save_dir, height=1024, width=20
 
     # image
     # 因为量化后的onnx会在onnx的开始插入nv12转rgb的操作，而我们输入的数据是rgb，所以这里需要转换下
-    image = preprocess_image(
+    image = preprocess_custom(
         image_path, 
         height=height, 
         width=width,
@@ -217,10 +216,67 @@ def eval_calib_onnx(onnx_calib_path, image_path, save_dir, height=1024, width=20
         os.makedirs(os.path.dirname(dst_path), exist_ok=True)
         cv2.imwrite(dst_path, image)
 
+def eval_calib_onnx_featuremap(onnx_calib_path, image_path, save_dir, height=1024, width=2048, show_dir = "eval_result_show"):
+    os.makedirs(save_dir, exist_ok=True)
+
+    # model
+    sess = HB_ONNXRuntime(model_file=onnx_calib_path)
+    input_names = [input.name for input in sess.get_inputs()]
+    output_names = [output.name for output in sess.get_outputs()]
+
+    # image
+    # 因为量化后的onnx会在onnx的开始插入nv12转rgb的操作，而我们输入的数据是rgb，所以这里需要转换下
+    image = preprocess_custom(
+        image_path, 
+        height=height, 
+        width=width,
+    )
+
+    image = np.expand_dims(image, axis=0)
+    image_show = (image * 255).astype(np.uint8)
+    # infer
+    feed_dict = {
+        input_names[0]: image,
+    }
+    outputs = sess.run(output_names, feed_dict)
+    scores, bboxes = outputs
+
+    # save
+    output_path = os.path.join(save_dir, os.path.basename(image_path)[: -4])
+    os.makedirs(output_path, exist_ok=True)
+    np.save(f"{output_path}/cls_scores.npy", scores)
+    np.save(f"{output_path}/bbox_preds.npy", bboxes)
+
+    # debug 存储一些结果
+    if SAVE_TEMP:
+        bboxes = bboxes.squeeze(0)
+        scores = scores.squeeze(0)
+        argmax_idx = np.argmax(scores, axis=1).astype(np.int8)
+        argmax_scores = scores[np.arange(scores.shape[0]), argmax_idx]
+        indexs = cv2.dnn.NMSBoxes(bboxes, argmax_scores, SCORES, IOU_THRESHOLD)
+
+        # 画图
+        image_show = image_show.transpose(0, 2, 3, 1)
+        image_show = cv2.cvtColor(image_show[0], cv2.COLOR_RGB2BGR)
+        for idx in indexs:
+            cv2.rectangle(image_show, 
+                        (int(bboxes[idx][0]), int(bboxes[idx][1])), 
+                        (int(bboxes[idx][2]), int(bboxes[idx][3])),
+                        (0, 255, 0), 
+                        2)
+            # 显示score
+            cv2.putText(image_show, str(argmax_scores[idx]), (int(bboxes[idx][0]), int(bboxes[idx][1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+        result_dir = os.path.join(os.path.dirname(save_dir), show_dir)
+        dst_path = os.path.join(result_dir, os.path.basename(image_path)[:-4]+"_result_calib.png")
+        os.makedirs(os.path.dirname(dst_path), exist_ok=True)
+        cv2.imwrite(dst_path, image_show)
+
+
 
 def eval_all_onnx(
         onnx_float_path, onnx_quant_path, onnx_calib_path,
         image_path, 
+        onnx_calib_featuremap_path, save_dir_calib_featuremap,
         save_dir_float, save_dir_quant, save_dir_calib,
         height=1024, width=2048, 
         show_dir = "eval_result_show"
@@ -231,6 +287,8 @@ def eval_all_onnx(
         eval_calib_onnx(onnx_calib_path, image_path, save_dir_calib, height=height, width=width, show_dir=show_dir)
     if onnx_quant_path:
         eval_quant_onnx(onnx_quant_path, image_path, save_dir_quant, height=height, width=width, show_dir=show_dir)
+    if onnx_calib_featuremap_path:
+        eval_calib_onnx_featuremap(onnx_calib_featuremap_path, image_path, save_dir_calib_featuremap, height=height, width=width, show_dir=show_dir)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Evaluate onnx model")
@@ -243,6 +301,8 @@ if __name__ == "__main__":
     parser.add_argument("--onnx_calib_path", type=str,
                         default="",
                         help="The path of calibration onnx model")
+    parser.add_argument("--onnx_calib_featuremap_path", type=str,
+                        default="")
     parser.add_argument("--onnx_quant_path", type=str,
                         default="",
                         help="The path of quantized onnx model")
@@ -252,6 +312,8 @@ if __name__ == "__main__":
     parser.add_argument("--save_dir_calib", type=str,
                         default="",
                         help="The directory to save calibration model result")
+    parser.add_argument("--save_dir_calib_featuremap", type=str,
+                        default="")
     parser.add_argument("--save_dir_quant", type=str,
                         default="",
                         help="The directory to save quantized model result")
@@ -274,9 +336,11 @@ if __name__ == "__main__":
     # 使用float模型进行推理
     onnx_float_path = args.onnx_float_path
     onnx_calib_path = args.onnx_calib_path
+    onnx_calib_featuremap_path = args.onnx_calib_featuremap_path
     onnx_quant_path = args.onnx_quant_path
     save_dir_float = args.save_dir_float
     save_dir_calib = args.save_dir_calib
+    save_dir_calib_featuremap = args.save_dir_calib_featuremap
     save_dir_quant = args.save_dir_quant
     
     print("start evaluating...")
@@ -284,6 +348,7 @@ if __name__ == "__main__":
     # for image_path in tqdm(all_val_images_path, desc="evaluating"):
     #     eval_all_onnx(onnx_float_path, onnx_quant_path, onnx_calib_path,
     #                   image_path, 
+    #                   onnx_calib_featuremap_path, save_dir_calib_featuremap,
     #                   save_dir_float, save_dir_quant, save_dir_calib,
     #                   height=args.height, width=args.width, 
     #                   show_dir=args.show_dir)
@@ -294,5 +359,6 @@ if __name__ == "__main__":
             executor.submit(eval_all_onnx, 
                             onnx_float_path, onnx_quant_path, onnx_calib_path,
                             image_path, 
+                            onnx_calib_featuremap_path, save_dir_calib_featuremap,
                             save_dir_float, save_dir_quant, save_dir_calib,
                             height=args.height, width=args.width, show_dir=args.show_dir)

@@ -100,7 +100,7 @@ class DictToClass:
             setattr(self, key, value)
 
 
-def coco_eval(data_dir, ann_file, classes, img_scale, data_prefix, pred_npy_dir, cfg, device = "cuda:0"):
+def coco_eval(data_dir, ann_file, classes, img_scale, data_prefix, pred_npy_dir, cfg, device = "cuda:0", save_pickle_path=""):
 
     # Define the data transformations
     transforms = [
@@ -250,8 +250,9 @@ def coco_eval(data_dir, ann_file, classes, img_scale, data_prefix, pred_npy_dir,
 
         
     # Save the results_list as a pkl file
-    gt_anno_path = os.path.join(data_dir, ann_file)
-    save_pkl(gt_anno_path, results_list)
+    if save_pickle_path:
+        gt_anno_path = os.path.join(data_dir, ann_file)
+        save_pkl(gt_anno_path, results_list, save_pickle_path)
     
     print("*** results_list:", len(results_list))
     test_evaluator.process({}, results_list)
@@ -260,7 +261,7 @@ def coco_eval(data_dir, ann_file, classes, img_scale, data_prefix, pred_npy_dir,
     print(eval_results)
 
 
-def save_pkl(gt_anno_path, pred_results):
+def save_pkl(gt_anno_path, pred_results, save_path):
     gt_json_data = json.load(open(gt_anno_path, 'r'))
     pkl_list = []
     for idx, pred_result in enumerate(pred_results):
@@ -288,7 +289,7 @@ def save_pkl(gt_anno_path, pred_results):
             'gt_instances': gt_instances
         })
 
-    with open('test.pkl', 'wb') as f:
+    with open(save_path, 'wb') as f:
         pickle.dump(pkl_list, f)
 
 def load_img_gt_instance(img_id, data):
@@ -328,6 +329,7 @@ if __name__ == "__main__":
     parser.add_argument("--width", type=int,
                         default=640,
                         help="width")
+    parser.add_argument('--save_pickle_path', type=str, default="")
     args = parser.parse_args()
 
     classes = (
@@ -360,7 +362,7 @@ if __name__ == "__main__":
     
     data_dir = args.data_dir
     ann_file = args.ann_file
-    coco_eval(data_dir, ann_file, classes, img_scale, data_prefix, pred_npy_dir, cfg, device)
+    coco_eval(data_dir, ann_file, classes, img_scale, data_prefix, pred_npy_dir, cfg, device, args.save_pickle_path)
 
 
 
