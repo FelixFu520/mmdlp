@@ -109,6 +109,7 @@ def eval_quant_onnx(onnx_quant_path, image_path, save_dir, height=1024, width=20
     image_show = image.astype(np.uint8)
     
     # fun_t = RGB2YUV444Transformer(data_format="CHW")  # 这个是无损的和板端有区别, 替换成下面完全模拟板端的
+    # input_data = fun_t.run_transform(image[0])
     fun_t1 = RGB2NV12Transformer(data_format="CHW")
     fun_t2 = NV12ToYUV444Transformer((height, width), yuv444_output_layout="CHW")
     input_data = fun_t1.run_transform(image[0])
