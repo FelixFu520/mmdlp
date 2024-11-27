@@ -146,7 +146,7 @@ def eval_quant_onnx(onnx_quant_path, image_path, save_dir, height=1024, width=20
         image_show = image_show.transpose(0, 2, 3, 1)
         image_show = cv2.cvtColor(image_show[0], cv2.COLOR_RGB2BGR)
         for idx in indexs:
-            cv2.rectangle(image, 
+            cv2.rectangle(image_show, 
                         (int(bboxes[idx][0]), int(bboxes[idx][1])), 
                         (int(bboxes[idx][2]), int(bboxes[idx][3])),
                         (0, 255, 0), 
