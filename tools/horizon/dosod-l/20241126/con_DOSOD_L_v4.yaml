@@ -135,7 +135,7 @@ input_parameters:
 
 # 校准参数组
 calibration_parameters:
-  cal_data_dir: '/home/fa.fu/work/work_dirs/horizon/dosod-l/calibration_data/calibration_images_75_featuremap_672×896'
+  cal_data_dir: '/home/fa.fu/work/work_dirs/horizon/dosod-l/calibration_data/calibration_images_75_nv12_672×896'
   cal_data_type: 'float32'
   preprocess_on: False
   # 校准使用的算法类型 default
