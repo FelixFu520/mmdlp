@@ -103,14 +103,12 @@ def eval_quant_onnx(onnx_quant_path, image_path, save_dir, height=1024, width=20
         image_path, 
         height=height, 
         width=width,
-        bgr_to_rgb=True,
-        to_float=True,
-        mean_std=False, 
-        transpose=True, 
-        new_axis=False
     )
+    image = image * 255
+    image = np.expand_dims(image, axis=0)
+    image_show = image.astype(np.uint8)
     fun_t = RGB2YUV444Transformer(data_format="CHW")
-    input_data = fun_t.run_transform(image)
+    input_data = fun_t.run_transform(image[0])
     input_data = input_data[np.newaxis, ...]
     input_data -= 128
     input_data = input_data.astype(np.int8)
@@ -137,8 +135,8 @@ def eval_quant_onnx(onnx_quant_path, image_path, save_dir, height=1024, width=20
         indexs = cv2.dnn.NMSBoxes(bboxes, argmax_scores, SCORES, IOU_THRESHOLD)
 
         # 画图
-        image = image.transpose(1, 2, 0)
-        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+        image_show = image_show.transpose(0, 2, 3, 1)
+        image_show = cv2.cvtColor(image_show[0], cv2.COLOR_RGB2BGR)
         for idx in indexs:
             cv2.rectangle(image, 
                         (int(bboxes[idx][0]), int(bboxes[idx][1])), 
@@ -146,11 +144,11 @@ def eval_quant_onnx(onnx_quant_path, image_path, save_dir, height=1024, width=20
                         (0, 255, 0), 
                         2)
             # 显示score
-            cv2.putText(image, str(argmax_scores[idx]), (int(bboxes[idx][0]), int(bboxes[idx][1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+            cv2.putText(image_show, str(argmax_scores[idx]), (int(bboxes[idx][0]), int(bboxes[idx][1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
         result_dir = os.path.join(os.path.dirname(save_dir), show_dir)
         dst_path = os.path.join(result_dir, os.path.basename(image_path)[:-4]+"_result_quant.png")
         os.makedirs(os.path.dirname(dst_path), exist_ok=True)
-        cv2.imwrite(dst_path, image)
+        cv2.imwrite(dst_path, image_show)
 
 def eval_quant_onnx_featuremap(onnx_quant_path, image_path, save_dir, height=1024, width=2048, show_dir = "eval_result_show"):
     os.makedirs(save_dir, exist_ok=True)
@@ -221,14 +219,12 @@ def eval_calib_onnx(onnx_calib_path, image_path, save_dir, height=1024, width=20
         image_path, 
         height=height, 
         width=width,
-        bgr_to_rgb=True,
-        to_float=True,
-        mean_std=False, 
-        transpose=True, 
-        new_axis=False
     )
+    image = image * 255
+    image = np.expand_dims(image, axis=0)
+    image_show = image.astype(np.uint8)
     fun_t = RGB2YUV444Transformer(data_format="CHW")
-    input_data = fun_t.run_transform(image)
+    input_data = fun_t.run_transform(image[0])
     input_data = input_data[np.newaxis, ...]
     # input_data -= 128
     # input_data = input_data.astype(np.int8)
@@ -256,20 +252,20 @@ def eval_calib_onnx(onnx_calib_path, image_path, save_dir, height=1024, width=20
         indexs = cv2.dnn.NMSBoxes(bboxes, argmax_scores, SCORES, IOU_THRESHOLD)
 
         # 画图
-        image = image.transpose(1, 2, 0)
-        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+        image_show = image_show.transpose(0, 2, 3, 1)
+        image_show = cv2.cvtColor(image_show[0], cv2.COLOR_RGB2BGR)
         for idx in indexs:
-            cv2.rectangle(image, 
+            cv2.rectangle(image_show, 
                         (int(bboxes[idx][0]), int(bboxes[idx][1])), 
                         (int(bboxes[idx][2]), int(bboxes[idx][3])),
                         (0, 255, 0), 
                         2)
             # 显示score
-            cv2.putText(image, str(argmax_scores[idx]), (int(bboxes[idx][0]), int(bboxes[idx][1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+            cv2.putText(image_show, str(argmax_scores[idx]), (int(bboxes[idx][0]), int(bboxes[idx][1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
         result_dir = os.path.join(os.path.dirname(save_dir), show_dir)
         dst_path = os.path.join(result_dir, os.path.basename(image_path)[:-4]+"_result_calib.png")
         os.makedirs(os.path.dirname(dst_path), exist_ok=True)
-        cv2.imwrite(dst_path, image)
+        cv2.imwrite(dst_path, image_show)
 
 def eval_calib_onnx_featuremap(onnx_calib_path, image_path, save_dir, height=1024, width=2048, show_dir = "eval_result_show"):
     os.makedirs(save_dir, exist_ok=True)
