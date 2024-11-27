@@ -4,6 +4,10 @@ import pickle
 import os
 import glob
 import torch
+import json
+import csv
+import argparse
+
 
 def compute_micro_averaging(pred_bboxes, pred_scores, pred_labels, 
                      gt_bboxes, gt_labels, thresholds=(0.1, 0.9, 0.05), 
@@ -126,22 +130,15 @@ def load_gt_from_json(gt_json_path):
 
 
 if __name__ == '__main__':
-    import json
-    import csv
-    pickle_paths = [
-        "/home/fa.fu/work/work_dirs/horizon/dosod-l/joint_space_mlp3x_l_40e_8gpus_finetune_kxj_1113_sjt_generated_motionblur_1024p/pth5.pkl",
-        "/home/fa.fu/work/work_dirs/horizon/dosod-l/joint_space_mlp3x_l_40e_8gpus_finetune_kxj_1113_sjt_generated_motionblur_1024p/test.pkl"
-        # "/home/fa.fu/work/work_dirs/horizon/dosod-l/joint_space_mlp3x_l_40e_8gpus_finetune_kxj_1113_sjt_generated_motionblur_1024p/joint_space_mlp3x_l_40e_8gpus_finetune_kxj_1113_sjt_generated_motionblur_1024p_science.pkl"
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--pickle_path', type=str, default=None)
+    parser.add_argument('--save_dir', type=str, default="/home/fa.fu/work/work_dirs/horizon/dosod-l/pr")
+    args = parser.parse_args()
 
-    ]
-    
-    
-    name_paths = [
-        '1113_1024p_896p',
-        "1113_1024p_896p_onnx"
-        ]
+    pickle_paths = [args.pickle_path]
+    name_paths = [os.path.basename(args.pickle_path[:-4])]
 
-    save_dir = '/home/fa.fu/work/work_dirs/horizon/dosod-l/pr'
+    save_dir = args.save_dir
     for idx_p, pickle_path in enumerate(pickle_paths):
         idx_p_save_dir = os.path.join(save_dir, name_paths[idx_p])
         os.makedirs(idx_p_save_dir, exist_ok=True)
@@ -161,20 +158,7 @@ if __name__ == '__main__':
         for idx, data in enumerate(pickle_data):
             pred_instances = data['pred_instances']
             
-            
-            # mask = pred_instances['labels'] == 0
-            # print(mask)
-            # # 仅保留 `labels` 为 0 的实例
-            # filtered_pred_instance = {
-            #     'bboxes': pred_instances['bboxes'][mask],
-            #     'scores': pred_instances['scores'][mask],
-            #     'labels': pred_instances['labels'][mask]
-            # }
-            # # print(filtered_pred_instance)
-            # pred_instances = filtered_pred_instance
-            
             gt_instances = data['gt_instances']
-
 
             tp_all_thresh, fp_all_thresh, fn_all_thresh = compute_micro_averaging(
                 pred_instances['bboxes'].numpy(), 
