@@ -16,7 +16,6 @@ def register_all_modules(init_default_scope: bool = True) -> None:
             to https://github.com/open-mmlab/mmengine/blob/main/docs/en/tutorials/registry.md
             Defaults to True.
     """  # noqa
-    import mmdlp.pruning  # noqa: F401,F403
     import mmdlp.horizon  # noqa: F401,F403
 
     if init_default_scope:
