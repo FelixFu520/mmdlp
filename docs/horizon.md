@@ -19,7 +19,7 @@ usermod -aG sudo $NEW_USER
 
 
 # 代理, 将下述内容写到/etc/profile中
-export https_proxy=http://10.112.12.231:7890 http_proxy=http://10.112.12.231:7890 all_proxy=socks5://10.112.12.231:7890
+export https_proxy=http://10.112.12.144:7890 http_proxy=http://10.112.12.144:7890 all_proxy=socks5://10.112.12.144:7890
 
 
 # 安装mm系列
