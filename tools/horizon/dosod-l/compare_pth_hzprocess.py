@@ -36,24 +36,8 @@ def yuv444_128_to_rgb(yuv_image):
     return rgb_image
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--image_path", type=str, default="/home/fa.fu/work/work_dirs/horizon/dosod-l/demo_images/0892.jpg")
-    parser.add_argument('--onnx_origin_path', type=str, default="/home/fa.fu/work/work_dirs/horizon/modified_dosod-l_epoch_40_kxj_rep-without-nms_motionblur_20241113_1024x1024_672x896_original_float_model.onnx")
-    parser.add_argument("--height", type=int,
-                        default=672,
-                        help="height")
-    parser.add_argument("--width", type=int,
-                        default=896,
-                        help="width")
-    args = parser.parse_args()
-
-    image_path = args.image_path
-    onnx_origin_path = args.onnx_origin_path
-    height = args.height
-    width = args.width
-
-    # 得到yuv444数据
+def compare_rgb(image_path, onnx_origin_path, height, width):
+     # 得到yuv444数据
     image = preprocess_custom(
         image_path, 
         height=height, 
@@ -82,3 +66,59 @@ if __name__ == "__main__":
 
     diff = np.sum(np.abs(output - image_rgb))
     print(diff)
+
+def compare_yuv444(image_path, onnx_origin_path, height, width):
+    # 得到yuv444数据
+    image = preprocess_custom(
+        image_path, 
+        height=height, 
+        width=width,
+    )
+    image = image * 255
+    fun_t1 = RGB2NV12Transformer(data_format="CHW")
+    image_nv12 = fun_t1.run_transform(image)
+    fun_t2 = NV12ToYUV444Transformer((height, width), yuv444_output_layout="CHW")
+    image_yuv444 = fun_t2.run_transform(image_nv12)
+
+    # pth输入
+    image_yuv = image_yuv444 / 255
+
+    # 得到HzPreprocess输出
+    sess = HB_ONNXRuntime(model_file=onnx_origin_path)
+    input_names = [input.name for input in sess.get_inputs()]
+    output_names = [output.name for output in sess.get_outputs()]
+    input_data = image_yuv444[np.newaxis, ...]
+    feed_dict = {
+        input_names[0]: input_data,
+    }
+    outputs = sess.run(output_names, feed_dict)
+    output = outputs[0][0]
+
+    print(f"sum: {np.sum(np.abs(output - image_yuv))}")
+    print(f"mean: {np.mean(output - image_yuv)}")
+    print(f"max: {np.max(output - image_yuv)}")
+    print(f"min: {np.min(output - image_yuv)}")
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--image_path", type=str, default="/home/fa.fu/work/work_dirs/horizon/dosod-l/demo_images/0892.jpg")
+    parser.add_argument('--onnx_origin_path', type=str, default="/home/fa.fu/work/work_dirs/horizon/dosod-l/20241203/output_v1/modified_dosod-l_epoch_40_kxj_rep-without-nms_motionblur_20241113_1024x1024_672x896_original_float_model.onnx")
+    parser.add_argument("--height", type=int,
+                        default=672,
+                        help="height")
+    parser.add_argument("--width", type=int,
+                        default=896,
+                        help="width")
+    parser.add_argument("--mode", type=str, default="yuv444")
+    args = parser.parse_args()
+
+    image_path = args.image_path
+    onnx_origin_path = args.onnx_origin_path
+    height = args.height
+    width = args.width
+
+    if args.mode == "rgb":
+        compare_rgb(image_path, onnx_origin_path, height, width)
+    elif args.mode == "yuv444":
+        compare_yuv444(image_path, onnx_origin_path, height, width)
+   
