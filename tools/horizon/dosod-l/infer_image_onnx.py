@@ -8,10 +8,8 @@ import argparse
 
 from preprocess import preprocess_custom
 
-MEAN=[123.675, 116.28, 103.53]
-STD=[58.395, 57.12, 57.375]
 
-def infer_origin_onnx(onnx_model_path: str, image_path: str, result_dir: str = "./", height=672, width=896):
+def infer_onnx(onnx_model_path: str, image_path: str, result_dir: str = "./", height=672, width=896):
     # model
     sess = HB_ONNXRuntime(model_file=onnx_model_path)
     input_names = [input.name for input in sess.get_inputs()]
@@ -55,6 +53,109 @@ def infer_origin_onnx(onnx_model_path: str, image_path: str, result_dir: str = "
         os.makedirs(os.path.dirname(dst_path), exist_ok=True)
         cv2.imwrite(dst_path, image_show)
     
+def infer_origin_onnx(onnx_model_path: str, image_path: str, result_dir: str = "./", height:int=512, width:int = 1024):
+    # model
+    sess = HB_ONNXRuntime(model_file=onnx_model_path)
+    input_names = [input.name for input in sess.get_inputs()]
+    output_names = [output.name for output in sess.get_outputs()]
+
+    # image
+    # 因为量化后的onnx会在onnx的开始插入nv12转rgb的操作，而我们输入的数据是rgb，所以这里需要转换下
+    image = preprocess_custom(
+        image_path, 
+        height=height, 
+        width=width,
+    )
+    image = image * 255
+    image = np.expand_dims(image, axis=0)
+    image_show = image.astype(np.uint8)
+    fun_t = RGB2YUV444Transformer(data_format="CHW")
+    input_data = fun_t.run_transform(image[0])
+    input_data = input_data[np.newaxis, ...]
+    # input_data -= 128
+    # input_data = input_data.astype(np.int8)
+    # input_data = input_data.transpose(0, 2, 3, 1)
+
+    # infer
+    feed_dict = {
+        input_names[0]: input_data,
+    }
+    outputs = sess.run(output_names, feed_dict)
+
+    if result_dir is not None:
+        # NMS
+        scores, bboxes = outputs
+        bboxes = bboxes.squeeze(0)
+        scores = scores.squeeze(0)
+        argmax_idx = np.argmax(scores, axis=1).astype(np.int8)
+        argmax_scores = scores[np.arange(scores.shape[0]), argmax_idx]
+        indexs = cv2.dnn.NMSBoxes(bboxes, argmax_scores, 0.01, 0.5)
+
+        # 画图
+        image_show = image_show.transpose(0, 2, 3, 1)
+        image_show = cv2.cvtColor(image_show[0], cv2.COLOR_RGB2BGR)
+        for idx in indexs:
+            cv2.rectangle(image_show, 
+                        (int(bboxes[idx][0]), int(bboxes[idx][1])), 
+                        (int(bboxes[idx][2]), int(bboxes[idx][3])),
+                        (0, 255, 0), 
+                        2)
+            cv2.putText(image_show, str(argmax_scores[idx]), (int(bboxes[idx][0]), int(bboxes[idx][1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+        dst_path = os.path.join(result_dir, os.path.basename(image_path)[:-4]+"_result.png")
+        os.makedirs(os.path.dirname(dst_path), exist_ok=True)
+        cv2.imwrite(dst_path, image_show)
+
+def infer_optim_onnx(onnx_model_path: str, image_path: str, result_dir: str = "./", height:int=512, width:int = 1024):
+    # model
+    sess = HB_ONNXRuntime(model_file=onnx_model_path)
+    input_names = [input.name for input in sess.get_inputs()]
+    output_names = [output.name for output in sess.get_outputs()]
+
+    # image
+    # 因为量化后的onnx会在onnx的开始插入nv12转rgb的操作，而我们输入的数据是rgb，所以这里需要转换下
+    image = preprocess_custom(
+        image_path, 
+        height=height, 
+        width=width,
+    )
+    image = image * 255
+    image = np.expand_dims(image, axis=0)
+    image_show = image.astype(np.uint8)
+    fun_t = RGB2YUV444Transformer(data_format="CHW")
+    input_data = fun_t.run_transform(image[0])
+    input_data = input_data[np.newaxis, ...]
+    # input_data -= 128
+    # input_data = input_data.astype(np.int8)
+    # input_data = input_data.transpose(0, 2, 3, 1)
+
+    # infer
+    feed_dict = {
+        input_names[0]: input_data,
+    }
+    outputs = sess.run(output_names, feed_dict)
+
+    if result_dir is not None:
+        # NMS
+        scores, bboxes = outputs
+        bboxes = bboxes.squeeze(0)
+        scores = scores.squeeze(0)
+        argmax_idx = np.argmax(scores, axis=1).astype(np.int8)
+        argmax_scores = scores[np.arange(scores.shape[0]), argmax_idx]
+        indexs = cv2.dnn.NMSBoxes(bboxes, argmax_scores, 0.01, 0.5)
+
+        # 画图
+        image_show = image_show.transpose(0, 2, 3, 1)
+        image_show = cv2.cvtColor(image_show[0], cv2.COLOR_RGB2BGR)
+        for idx in indexs:
+            cv2.rectangle(image_show, 
+                        (int(bboxes[idx][0]), int(bboxes[idx][1])), 
+                        (int(bboxes[idx][2]), int(bboxes[idx][3])),
+                        (0, 255, 0), 
+                        2)
+            cv2.putText(image_show, str(argmax_scores[idx]), (int(bboxes[idx][0]), int(bboxes[idx][1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+        dst_path = os.path.join(result_dir, os.path.basename(image_path)[:-4]+"_result.png")
+        os.makedirs(os.path.dirname(dst_path), exist_ok=True)
+        cv2.imwrite(dst_path, image_show)
 
 def infer_calib_onnx(onnx_model_path: str, image_path: str, result_dir: str = "./", height:int=512, width:int = 1024):
     # model
@@ -189,7 +290,7 @@ if __name__ == "__main__":
                         default=896,
                         help="width")
     parser.add_argument('--lossy', action='store_true', help='lossy')
-    parser.add_argument('--mode', type=str, default="origin")
+    parser.add_argument('--mode', type=str, default="origin")   # float, origin, optim, calib, quant
     args = parser.parse_args()
 
     onnx_model_path = args.onnx_float_path
@@ -200,9 +301,25 @@ if __name__ == "__main__":
 
     os.makedirs(result_dir, exist_ok=True)
 
-    if args.mode == "origin":
+    if args.mode == "float":
         # 使用原始onnx推理查看下onnx是否正确
+        infer_onnx(
+            onnx_model_path=onnx_model_path,
+            image_path=image_path,
+            result_dir=osp.join(result_dir, osp.basename(onnx_model_path)[:-5]),
+            height=args.height,
+            width=args.width,
+        )
+    elif args.mode == "origin":
         infer_origin_onnx(
+            onnx_model_path=onnx_model_path,
+            image_path=image_path,
+            result_dir=osp.join(result_dir, osp.basename(onnx_model_path)[:-5]),
+            height=args.height,
+            width=args.width,
+        )
+    elif args.mode == "optim":
+        infer_optim_onnx(
             onnx_model_path=onnx_model_path,
             image_path=image_path,
             result_dir=osp.join(result_dir, osp.basename(onnx_model_path)[:-5]),
