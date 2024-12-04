@@ -9,6 +9,47 @@ from onnx import helper, checker, shape_inference
 import argparse
 from preprocess import preprocess_custom
 
+
+def yuv444_128_to_rgb2(yuv_image):
+    yuv_image = yuv_image.transpose(1, 2, 0)
+    
+    # 提取Y、U、V分量(这里假设数据排列顺序是Y、U、V通道依排列
+    y_128 = yuv_image[:, :, 0].astype(np.float32)
+    u_128 = yuv_image[:, :, 1].astype(np.float32)
+    v_128 = yuv_image[:, :, 2].astype(np.float32)
+
+    # YUV_BT601_FULL_RANGE_128 to YUV_BT601_FULL_RANGE.
+    y = y_128 + 128
+    u = u_128 + 128
+    v = v_128 + 128
+
+    # YUV_BT601_FULL_RANGE to RBG.
+    r = 1 * y + 1.4017 * (v - 128)
+    g = y - 0.3437 * (u - 128) - 0.7142 * (v - 128)
+    b = y + 1.7722 * (u - 128)
+
+    # data scale
+    r = r / 255
+    g = g / 255
+    b = b / 255
+
+    # YUV_BT601_FULL_RANGE_128 -> RGB -> data scale
+    # r = (1 * (y_128 + 128) + 1.4017 * v_128) / 255
+    # g = (1 * (y_128 + 128) - 0.3437 * u_128 - 0.7142 * v_128) / 255
+    # b = (1 * (y_128 + 128) + 1.7722 * v_128) / 255
+
+    # =====>
+    # r = 0.003921568859368563 * y_128 + 0.005496862745098039 * v_128 + 0.5019607543945312
+    # g = 0.003921568859368563 * y_128 - 0.0013478432083502412 * u_128 - 0.0028007845394313335 * v_128 + 0.5019607543945312
+    # b = 0.003921568859368563 * y_128 + 0.0069498042576014996 * u_128 + 0.5019608736038208
+
+    rgb_image = np.stack([r, g, b], axis=2) * 255
+    # rgb_image = rgb_image.clip(0, 255).astype(np.uint8)
+    rgb_image = rgb_image.transpose(2, 0, 1)
+    return rgb_image
+
+
+
 def yuv444_128_to_rgb(yuv_image):
     """
     将YUV444_128格式的图像数据转换为RGB格式
@@ -20,18 +61,13 @@ def yuv444_128_to_rgb(yuv_image):
     u = yuv_image[:, :, 1].astype(np.float32)
     v = yuv_image[:, :, 2].astype(np.float32)
 
-    # r = (y + 128) +  0.005496863275766373 * v
-    # g = (y + 128) -  0.0013478432083502412 * u - 0.0028007845394313335 * v
-    # b = (y + 128) +  0.0069498042576014996 * u
-
-    r = y +  0.005496863275766373 * v
-    g = y -  0.0013478432083502412 * u - 0.0028007845394313335 * v
-    b = y +  0.0069498042576014996 * u
-
+    r = 0.003921568859368563 * y + 0.005496863275766373 * v + 0.501960813999176
+    g = 0.003921568859368563 * y - 0.0013478432083502412 * u - 0.0028007845394313335 * v + 0.5019607543945312
+    b = 0.003921568859368563 * y + 0.0069498042576014996 * u + 0.5019608736038208
 
     # 合并RGB通道
-    rgb_image = np.stack([r, g, b], axis=2)
-    rgb_image = rgb_image.clip(0, 255).astype(np.uint8)
+    rgb_image = np.stack([r, g, b], axis=2) * 255
+    # rgb_image = rgb_image.clip(0, 255).astype(np.uint8)
     rgb_image = rgb_image.transpose(2, 0, 1)
     return rgb_image
 
@@ -50,7 +86,11 @@ def compare_rgb(image_path, onnx_origin_path, height, width):
     image_yuv444 = fun_t2.run_transform(image_nv12)
 
     # pth输入
-    image_rgb = yuv444_128_to_rgb(image_yuv444).astype(np.float32)
+    fun_t3 = AddTransformer(-128)
+    image_yuv444_128 = fun_t3.run_transform(image_yuv444)
+    image_rgb = yuv444_128_to_rgb(image_yuv444_128).astype(np.float32)
+    # image_rgb = yuv444_128_to_rgb2(image_yuv444_128).astype(np.float32)
+
     image_rgb /= 255
 
     # 得到HzPreprocess输出
@@ -64,8 +104,10 @@ def compare_rgb(image_path, onnx_origin_path, height, width):
     outputs = sess.run(output_names, feed_dict)
     output = outputs[0][0]
 
-    diff = np.sum(np.abs(output - image_rgb))
-    print(diff)
+    print(f"sum: {np.sum(np.abs(output - image_rgb))}")
+    print(f"mean: {np.mean(output - image_rgb)}")
+    print(f"max: {np.max(output - image_rgb)}")
+    print(f"min: {np.min(output - image_rgb)}")
 
 def compare_yuv444(image_path, onnx_origin_path, height, width):
     # 得到yuv444数据
