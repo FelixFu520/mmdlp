@@ -175,6 +175,7 @@ def eval_quant_onnx_featuremap(onnx_quant_path, image_path, save_dir, height=102
     )
 
     image = np.expand_dims(image, axis=0)
+    image = image[:, [2, 1, 0], ...]
     image_show = (image * 255).astype(np.uint8)
     # infer
     feed_dict = {
@@ -292,6 +293,7 @@ def eval_calib_onnx_featuremap(onnx_calib_path, image_path, save_dir, height=102
     )
 
     image = np.expand_dims(image, axis=0)
+    image = image[:, [2, 1, 0], ...]
     image_show = (image * 255).astype(np.uint8)
     # infer
     feed_dict = {

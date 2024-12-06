@@ -1,0 +1,40 @@
+model_parameters:
+  onnx_model: '/home/fa.fu/work/work_dirs/horizon/dosod-l/20241205/dosod-l_epoch_40_kxj_rep-without-nms_20241124_1024x1024_672x896_bgr_nv12_yuv444.onnx'
+  march: 'bayes-e'
+  output_model_file_prefix: 'dosod-l_epoch_40_kxj_rep-without-nms_20241124_1024x1024_672x896_bgr_nv12_yuv444'
+  working_dir: '/home/fa.fu/work/work_dirs/horizon/dosod-l/20241205/output_v1'
+  remove_node_type: 'Quantize;Dequantize;Transpose;Cast;Reshape'
+  layer_out_dump: False
+  # debug_mode: "dump_calibration_data" 
+
+ 
+input_parameters:
+  input_name: 'images'
+  input_type_train: 'featuremap'
+  input_layout_train: 'NCHW'
+  input_shape: '1x3x672x896'
+  input_batch: 1
+  # norm_type: 'data_scale'
+  # mean_value: ''
+  # scale_value: 0.003921568627451
+  input_layout_rt: 'NCHW'
+  input_type_rt: 'featuremap'
+
+
+# 校准参数组
+calibration_parameters:
+  cal_data_dir: '/home/fa.fu/work/work_dirs/horizon/dosod-l/calibration_data/calibration_images_75_featuremap_yuv444_672×896'
+  cal_data_type: 'float32'
+  preprocess_on: False
+  # 校准使用的算法类型 default
+  calibration_type: 'default'
+  # calibration_type: 'max'
+  # max_percentile: 0.99995
+  optimization: 'set_all_nodes_int16'
+  
+
+compiler_parameters:
+  compile_mode: 'latency'
+  debug: False
+  optimize_level: 'O3'
+  jobs: 32
