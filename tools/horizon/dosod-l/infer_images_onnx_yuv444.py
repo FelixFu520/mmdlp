@@ -106,18 +106,19 @@ def eval_quant_onnx(onnx_quant_path, image_path, save_dir, height=1024, width=20
     )
     image = image * 255
     image = np.expand_dims(image, axis=0)
+    image = image[:, [2, 1, 0], ...]
     image_show = image.astype(np.uint8)
-    
-    if not lossy:
-        fun_t = RGB2YUV444Transformer(data_format="CHW")  # 这个是无损的和板端有区别, 替换成下面完全模拟板端的
-        input_data = fun_t.run_transform(image[0])
-    else:
-        fun_t1 = RGB2NV12Transformer(data_format="CHW")
-        fun_t2 = NV12ToYUV444Transformer((height, width), yuv444_output_layout="CHW")
-        input_data = fun_t1.run_transform(image[0])
-        input_data = fun_t2.run_transform(input_data)
+    input_data = image
+    # if not lossy:
+    #     fun_t = RGB2YUV444Transformer(data_format="CHW")  # 这个是无损的和板端有区别, 替换成下面完全模拟板端的
+    #     input_data = fun_t.run_transform(image[0])
+    # else:
+    #     fun_t1 = RGB2NV12Transformer(data_format="CHW")
+    #     fun_t2 = NV12ToYUV444Transformer((height, width), yuv444_output_layout="CHW")
+    #     input_data = fun_t1.run_transform(image[0])
+    #     input_data = fun_t2.run_transform(input_data)
 
-    input_data = input_data[np.newaxis, ...]
+    # input_data = input_data[np.newaxis, ...]
     input_data -= 128
     input_data = input_data.astype(np.int8)
     input_data = input_data.transpose(0, 2, 3, 1)
@@ -231,10 +232,12 @@ def eval_calib_onnx(onnx_calib_path, image_path, save_dir, height=1024, width=20
     )
     image = image * 255
     image = np.expand_dims(image, axis=0)
+    image = image[:, [2, 1, 0], ...]
     image_show = image.astype(np.uint8)
-    fun_t = RGB2YUV444Transformer(data_format="CHW")
-    input_data = fun_t.run_transform(image[0])
-    input_data = input_data[np.newaxis, ...]
+    input_data = image
+    # fun_t = RGB2YUV444Transformer(data_format="CHW")
+    # input_data = fun_t.run_transform(image[0])
+    # input_data = input_data[np.newaxis, ...]
     # input_data -= 128
     # input_data = input_data.astype(np.int8)
     # input_data = input_data.transpose(0, 2, 3, 1)
