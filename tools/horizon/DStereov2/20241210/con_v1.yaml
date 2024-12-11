@@ -3,10 +3,10 @@ model_parameters:
   march: 'bayes-e'
   output_model_file_prefix: 'PTQ_check_yuv444'
   working_dir: '/home/fa.fu/work/work_dirs/horizon/DStereov2/20241210/output_v1'
-  remove_node_type: 'Quantize;Dequantize;'
-  layer_out_dump: True
+  # remove_node_type: 'Quantize;Dequantize;'
+  # layer_out_dump: True
   # output_nodes: 'HZ_PREPROCESS_FOR_infra1;HZ_PREPROCESS_FOR_infra2'
-  debug_mode: "dump_calibration_data" 
+  # debug_mode: "dump_calibration_data" 
   node_info: {
     "/get_initdisp/Softmax": {
       'ON': 'BPU',
@@ -39,8 +39,8 @@ input_parameters:
 
 # 校准参数组
 calibration_parameters:
-  cal_data_dir: '/home/fa.fu/work/work_dirs/horizon/DStereov2/calibration_data/calibration1208_yuv444_sub/infra1;/home/fa.fu/work/work_dirs/horizon/DStereov2/calibration_data/calibration1208_yuv444_sub/infra2'
-  cal_data_type: 'uint8;uint8'
+  cal_data_dir: '/home/fa.fu/work/work_dirs/horizon/DStereov2/calibration_data/calibration1208_yuv444_sub_fix/infra1;/home/fa.fu/work/work_dirs/horizon/DStereov2/calibration_data/calibration1208_yuv444_sub_fix/infra2'
+  cal_data_type: 'float32;float32'
   preprocess_on: False
   # 校准使用的算法类型 default
   calibration_type: 'default'
@@ -49,6 +49,6 @@ calibration_parameters:
 
 compiler_parameters:
   compile_mode: 'latency'
-  debug: True               # 设置True会影响bin文件推理速度
+  debug: False               # 设置True会影响bin文件推理速度
   optimize_level: 'O3'
-  jobs: 16
+  jobs: 32
