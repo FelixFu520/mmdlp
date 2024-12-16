@@ -23,6 +23,23 @@ from horizon_tc_ui import HB_ONNXRuntime
 # from horizon_nn.ir.horizon_onnx import global_attributes, quant_attributes, quantizer
 # from horizon_nn.tools.compare_calibrated_and_quantized_model import ConsistencyChecker
 
+def disp2rgb(disp, disp_max, disp_min):
+    mask = np.logical_or(disp > disp_max, disp < disp_min)
+    disp = np.clip(disp, disp_min, disp_max)  # 近处是0， 远处320
+    mat_min = disp.min()
+    mat_max = disp.max()
+    norm_matrix = (disp - mat_min) / (mat_max - mat_min)
+    disp = 0.1 + norm_matrix * (0.9 - 0.1)
+    # disp = disp / 355
+    # disp = disp / disp.max()
+    # disp = abs(disp - 1)
+    disp *= 256
+    disp = np.round(disp).astype(np.uint8)[..., None]
+    disp = cv2.applyColorMap(disp, cv2.COLORMAP_JET)#[:,:,::-1]
+    disp[mask] = (0, 0, 0)
+
+    return disp
+
 def validate_result(disp_pr, disp_gt):
     assert disp_pr.shape == disp_gt.shape, (disp_pr.shape, disp_gt.shape)
     epe = torch.abs(disp_pr - disp_gt)
@@ -73,7 +90,7 @@ def validate_instereo2k(exp_root, onnx_prefix, left, right, disp_gt):
     for onnx_file in target_onnx_list:
         key = onnx_file.replace(os.path.join(exp_root, onnx_prefix + "_"), "").replace(".onnx", "")
         if key not in validation_dict.keys():
-            validation_dict[key] = {"out_list": [], "epe_list": []}
+            validation_dict[key] = {"out_list": [], "epe_list": [], "disp": None}
         sess = HB_ONNXRuntime(model_file=onnx_file)
         input_names = [input.name for input in sess.get_inputs()]
         output_names = [output.name for output in sess.get_outputs()]
@@ -85,6 +102,7 @@ def validate_instereo2k(exp_root, onnx_prefix, left, right, disp_gt):
     for onnx_file in target_onnx_list:
         key = onnx_file.replace(os.path.join(exp_root, onnx_prefix + "_"), "").replace(".onnx", "")
         disp_pr = get_onnx_infer_result(key, onnx_infer_dict, copy.deepcopy(left), copy.deepcopy(right))
+        validation_dict[key]['disp'] = copy.deepcopy(disp_pr.cpu().numpy())
         epe, out = validate_result(disp_pr, disp_gt)
         if(np.isnan(epe[val].mean().item())):
             raise NotImplementedError
@@ -102,15 +120,20 @@ def validate_instereo2k(exp_root, onnx_prefix, left, right, disp_gt):
         d1 = 100 * np.mean(out_list)
 
         print("%s Validation Instereo2K: %f, %f" % (key, epe, d1))
+    
+    for key in ["calibrated_model", "quantized_model"]:
+        disp_pr_diff = np.abs(validation_dict[key]['disp'] - validation_dict["original_float_model"]['disp'])
+        disp_pr_diff_rgb = disp2rgb(disp_pr_diff, disp_pr_diff.max().item(), 0)
+        cv2.imwrite("%s_disp_diff.png" % key, disp_pr_diff_rgb)
     return {'scene-disp-epe': epe, 'scene-disp-d1': d1}
 
 
 
 if __name__ == '__main__':
 
-    left = np.fromfile("/home/fa.fu/work/mmdlp/test/onnxcheck_left.npy", dtype=np.uint8).reshape(1, 352, 640, 3)
-    right = np.fromfile("/home/fa.fu/work/mmdlp/test/onnxcheck_right.npy", dtype=np.uint8).reshape(1, 352, 640, 3)
-    disp_gt = torch.from_numpy(np.fromfile("/home/fa.fu/work/mmdlp/test/onnxcheck_disp_gt.npy", dtype=np.float32).reshape(352, 640))
-    exp_root = "/home/fa.fu/work/work_dirs/horizon/DStereov2/20241210/output_v5/"
+    left = np.fromfile("/home/fa.fu/work/mmdlp/tools/horizon/DStereov2/test/onnxcheck_left.npy", dtype=np.uint8).reshape(1, 352, 640, 3)
+    right = np.fromfile("/home/fa.fu/work/mmdlp/tools/horizon/DStereov2/test/onnxcheck_right.npy", dtype=np.uint8).reshape(1, 352, 640, 3)
+    disp_gt = torch.from_numpy(np.fromfile("/home/fa.fu/work/mmdlp/tools/horizon/DStereov2/test/onnxcheck_disp_gt.npy", dtype=np.float32).reshape(352, 640))
+    exp_root = "/home/fa.fu/work/work_dirs/horizon/DStereov2/20241216/output_v1/"
     onnx_prefix = 'PTQ_check_yuv444'
     validate_instereo2k(exp_root, onnx_prefix, left, right, disp_gt)
