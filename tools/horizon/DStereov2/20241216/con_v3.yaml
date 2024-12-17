@@ -1,5 +1,5 @@
 model_parameters:
-  onnx_model: '/home/fa.fu/work/work_dirs/horizon/DStereov2/float_modify.onnx'
+  onnx_model: '/home/fa.fu/work/work_dirs/horizon/DStereov2/20241216/output_v1_split/PTQ_check_yuv444_optimized_float_model_split.onnx'
   march: 'bayes-e'
   output_model_file_prefix: 'PTQ_check_yuv444'
   working_dir: '/home/fa.fu/work/work_dirs/horizon/DStereov2/20241216/output_v3'
@@ -38,7 +38,221 @@ model_parameters:
       'InputType': 'int16',
       'OutputType': 'int16'
     },
-
+    "head_layer/conv/conv.1/conv.1.0/Conv":{
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/refinement/update_block/encoder/convd1_1/Conv":{
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/cost_agg/feature_att_8/feat_att/feat_att.0/LeakyRelu":{
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/cost_agg/feature_att_8/feat_att/feat_att.1/Conv":{
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/backbone/mod6/mod6.0/head_layer/Add":{
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/backbone/mod6/mod6.0/stack_layers/stack_layers.0/Add":{
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/backbone/mod6/mod6.0/head_layer/relu/Relu":{
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/refinement/update_block/encoder/convd1/Conv":{
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/refinement/update_block/encoder/convd1/Conv":{
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/get_initdisp/Softmax_reducemax_FROM_QUANTIZED_SOFTMAX": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/get_initdisp/Softmax_sub_FROM_QUANTIZED_SOFTMAX": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/cost_agg/conv1/conv1.0/LeakyRelu": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/cost_agg/conv1/conv1.1/conv/Conv": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/backbone/mod2/mod2.0/head_layer/conv/conv.0/conv.0.0/Conv": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/backbone/mod2/mod2.0/head_layer/conv/conv.1/conv.1.0_1/Conv": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/backbone/mod1/mod1.0/Conv": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/cost_agg/conv2/conv2.1/LeakyRelu": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/cost_agg/feature_att_16/Mul": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/backbone/mod3/mod3.0/head_layer/downsample/downsample.0/Conv": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/refinement/update_block/gru/convq/Conv": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/cost_agg/conv2/conv2.1/conv/Conv": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/cost_agg/conv2/conv2.0/LeakyRelu": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/backbone/mod3/mod3.0/head_layer/conv/conv.0/conv.0.0/Conv": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/backbone/mod2/mod2.0/head_layer/conv/conv.0/conv.0.0_1/Conv": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/backbone/mod2/mod2.0/head_layer/conv/conv.1/conv.1.0/Conv": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/refinement/update_block/encoder/convd1_1/Conv": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/cost_agg/feature_att_8/feat_att/feat_att.1/Conv": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/cost_agg/feature_att_8/feat_att/feat_att.0/LeakyRelu": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/backbone/mod6/mod6.0/head_layer/relu/Relu": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/backbone/mod6/mod6.0/stack_layers/stack_layers.0/Add": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/refinement/update_block/encoder/convd1/Conv": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/get_initdisp/classifier/LeakyRelu": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/get_initdisp/Softmax_reducemax_FROM_QUANTIZED_SOFTMAX;/get_initdisp/Softmax_sub_FROM_QUANTIZED_SOFTMAX": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/backbone/mod6/mod6.0/head_layer/Add": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/cost_agg/conv1/conv1.1/conv/Conv": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/cost_agg/conv1/conv1.0/LeakyRelu": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/backbone/mod2/mod2.0/head_layer/conv/conv.1/conv.1.0_1/Conv": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/cost_agg/conv2/conv2.1/LeakyRelu": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/cost_agg/feature_att_16/Mul": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/cost_agg/conv2/conv2.1/conv/Conv": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/cost_agg/conv2/conv2.0/LeakyRelu": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/backbone/mod2/mod2.0/head_layer/conv/conv.0/conv.0.0/Conv": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
+    "/backbone/mod3/mod3.0/head_layer/downsample/downsample.0/Conv;/backbone/mod3/mod3.0/head_layer/conv/conv.0/conv.0.0/Conv": {
+      'ON': 'BPU',
+      'InputType': 'int16',
+      'OutputType': 'int16'
+    },
  }
 
 input_parameters:

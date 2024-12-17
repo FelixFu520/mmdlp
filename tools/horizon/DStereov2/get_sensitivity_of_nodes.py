@@ -8,7 +8,7 @@ logging.basicConfig(filename='get_sensitivity_of_nodes.log', level=logging.DEBUG
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Get sensitivity of nodes')
     parser.add_argument('--model_output', type=str,
-                        default='/home/fa.fu/work/work_dirs/horizon/DStereov2/20241210/output_v4/',
+                        default='/home/fa.fu/work/work_dirs/horizon/DStereov2/20241216/output_v1_debug/',
                         help="model or file"
                         )
     parser.add_argument('--onnx_name', type=str, 

@@ -14,6 +14,7 @@ import torch.utils.data as data
 from pathlib import Path
 from matplotlib import pyplot as plt
 import copy
+from hmct.ir import load_model, save_model
 # from hat.data.datasets.multi_disp_dataset.list_dataset import Instereo2KDataset
 # from hat.data.datasets.multi_disp_dataset.augment_dataset import AugDataset
 from horizon_tc_ui import HB_ONNXRuntime
@@ -22,23 +23,6 @@ from horizon_tc_ui import HB_ONNXRuntime
 # from horizon_nn.ir import load_model, save_model
 # from horizon_nn.ir.horizon_onnx import global_attributes, quant_attributes, quantizer
 # from horizon_nn.tools.compare_calibrated_and_quantized_model import ConsistencyChecker
-
-def disp2rgb(disp, disp_max, disp_min):
-    mask = np.logical_or(disp > disp_max, disp < disp_min)
-    disp = np.clip(disp, disp_min, disp_max)  # 近处是0， 远处320
-    mat_min = disp.min()
-    mat_max = disp.max()
-    norm_matrix = (disp - mat_min) / (mat_max - mat_min)
-    disp = 0.1 + norm_matrix * (0.9 - 0.1)
-    # disp = disp / 355
-    # disp = disp / disp.max()
-    # disp = abs(disp - 1)
-    disp *= 256
-    disp = np.round(disp).astype(np.uint8)[..., None]
-    disp = cv2.applyColorMap(disp, cv2.COLORMAP_JET)#[:,:,::-1]
-    disp[mask] = (0, 0, 0)
-
-    return disp
 
 def validate_result(disp_pr, disp_gt):
     assert disp_pr.shape == disp_gt.shape, (disp_pr.shape, disp_gt.shape)
@@ -54,13 +38,13 @@ def result2disp(disp_unfold, spx):
     return disp
 
 def get_onnx_infer_result(key, onnx_infer_dict, left, right, lossy=False):
-    assert key in ["original_float_model", "optimized_float_model", "calibrated_model", "quantized_model"], key
+    assert key in ["original_float_model", "optimized_float_model", "calibrated_model_test", "quantized_model"], key
     if key == "quantized_model":
         left -= 128
         infra1 = left.astype(np.int8)
         right -= 128
         infra2 = right.astype(np.int8)
-    elif key in ["original_float_model", "optimized_float_model", "calibrated_model"]:
+    elif key in ["original_float_model", "optimized_float_model", "calibrated_model_test"]:
         infra1 = left.transpose(0, 3, 1, 2).astype(np.float32)
         infra2 = right.transpose(0, 3, 1, 2).astype(np.float32)
     
@@ -81,16 +65,45 @@ def validate_instereo2k(exp_root, onnx_prefix, left, right, disp_gt):
     target_onnx_list = [
         os.path.join(exp_root, "%s_original_float_model.onnx" % onnx_prefix),
         os.path.join(exp_root, "%s_optimized_float_model.onnx" % onnx_prefix),
-        os.path.join(exp_root, "%s_calibrated_model.onnx" % onnx_prefix),
+        os.path.join(exp_root, "%s_calibrated_model_test.onnx" % onnx_prefix),
         os.path.join(exp_root, "%s_quantized_model.onnx" % onnx_prefix),
     ]
+    calibrated_model = load_model(os.path.join(exp_root, "%s_calibrated_model.onnx" % onnx_prefix))
+    calibration_nodes = calibrated_model.graph.type2nodes["HzCalibration"]
+    for node in calibration_nodes:
+        # if node.tensor_type == "weight":
+        #     node.qtype = "int16"
+        # if node.tensor_type == "featuremap":
+        #     node.qtype = "int16"
+        if node.name in [
+            "onnx::Conv_2747_HzCalibration",
+            "onnx::Conv_2864_HzCalibration",
+            "onnx::Conv_2750_HzCalibration",
+            "/get_initdisp/GEMMvariable_2921_conv_weight_HzCalibration",
+            "onnx::Conv_2867_HzCalibration",
+            "refinement.update_block.encoder.convd1.weight_/refinement/update_block/encoder/convd1/Conv_HzCalibration",
+            "refinement.update_block.encoder.convd1.weight_/refinement/update_block/encoder/convd1_1/Conv_HzCalibration",
+            # "/get_initdisp/GEMMvariable_2921_conv_weight_HzCalibration",
+            # "refinement.update_block.encoder.convd1.weight_/refinement/update_block/encoder/convd1_1/Conv_HzCalibration",
+            # "refinement.update_block.gru.convq.weight_/refinement/update_block/gru/convq_1/Conv_HzCalibration",
+            # "refinement.update_block.encoder.convd1.weight_/refinement/update_block/encoder/convd1/Conv_HzCalibration",
+            # "onnx::Conv_3071_HzCalibration",
+            # "onnx::Conv_2747_HzCalibration",
+            # "refinement.update_block.encoder.convd2.weight_/refinement/update_block/encoder/convd2_1/Conv_HzCalibration",
+            # "onnx::Conv_2750_HzCalibration",
+            # "refinement.spx_gru.0.weight_HzCalibration",
+            # "refinement.update_block.mask_feat_4.0.weight_HzCalibration",
+            # "refinement.update_block.gru.convq.weight_/refinement/update_block/gru/convq/Conv_HzCalibration",
+        ]:
+            node.qtype = "int16"
+    save_model(calibrated_model, os.path.join(exp_root, "%s_calibrated_model_test.onnx" % onnx_prefix))
 
     validation_dict = {}
     onnx_infer_dict = {}
     for onnx_file in target_onnx_list:
         key = onnx_file.replace(os.path.join(exp_root, onnx_prefix + "_"), "").replace(".onnx", "")
         if key not in validation_dict.keys():
-            validation_dict[key] = {"out_list": [], "epe_list": [], "disp": None}
+            validation_dict[key] = {"out_list": [], "epe_list": []}
         sess = HB_ONNXRuntime(model_file=onnx_file)
         input_names = [input.name for input in sess.get_inputs()]
         output_names = [output.name for output in sess.get_outputs()]
@@ -102,7 +115,6 @@ def validate_instereo2k(exp_root, onnx_prefix, left, right, disp_gt):
     for onnx_file in target_onnx_list:
         key = onnx_file.replace(os.path.join(exp_root, onnx_prefix + "_"), "").replace(".onnx", "")
         disp_pr = get_onnx_infer_result(key, onnx_infer_dict, copy.deepcopy(left), copy.deepcopy(right))
-        validation_dict[key]['disp'] = copy.deepcopy(disp_pr.cpu().numpy())
         epe, out = validate_result(disp_pr, disp_gt)
         if(np.isnan(epe[val].mean().item())):
             raise NotImplementedError
@@ -120,20 +132,13 @@ def validate_instereo2k(exp_root, onnx_prefix, left, right, disp_gt):
         d1 = 100 * np.mean(out_list)
 
         print("%s Validation Instereo2K: %f, %f" % (key, epe, d1))
-    
-    for key in ["calibrated_model", "quantized_model"]:
-        disp_pr_diff = np.abs(validation_dict[key]['disp'] - validation_dict["original_float_model"]['disp'])
-        disp_pr_diff_rgb = disp2rgb(disp_pr_diff, disp_pr_diff.max().item(), 0)
-        cv2.imwrite("%s_disp_diff.png" % key, disp_pr_diff_rgb)
     return {'scene-disp-epe': epe, 'scene-disp-d1': d1}
 
 
-
 if __name__ == '__main__':
-
     left = np.fromfile("/home/fa.fu/work/mmdlp/tools/horizon/DStereov2/test/onnxcheck_left.npy", dtype=np.uint8).reshape(1, 352, 640, 3)
     right = np.fromfile("/home/fa.fu/work/mmdlp/tools/horizon/DStereov2/test/onnxcheck_right.npy", dtype=np.uint8).reshape(1, 352, 640, 3)
     disp_gt = torch.from_numpy(np.fromfile("/home/fa.fu/work/mmdlp/tools/horizon/DStereov2/test/onnxcheck_disp_gt.npy", dtype=np.float32).reshape(352, 640))
-    exp_root = "/home/fa.fu/work/work_dirs/horizon/DStereov2/20241216/output_v3/"
+    exp_root = "/home/fa.fu/work/work_dirs/horizon/DStereov2/20241216/output_v1/"
     onnx_prefix = 'PTQ_check_yuv444'
     validate_instereo2k(exp_root, onnx_prefix, left, right, disp_gt)
