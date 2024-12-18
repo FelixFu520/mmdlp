@@ -23,7 +23,7 @@ from horizon_tc_ui import HB_ONNXRuntime
 # from horizon_nn.ir import load_model, save_model
 # from horizon_nn.ir.horizon_onnx import global_attributes, quant_attributes, quantizer
 # from horizon_nn.tools.compare_calibrated_and_quantized_model import ConsistencyChecker
-
+from hmct.common import find_input_calibration
 def validate_result(disp_pr, disp_gt):
     assert disp_pr.shape == disp_gt.shape, (disp_pr.shape, disp_gt.shape)
     epe = torch.abs(disp_pr - disp_gt)
@@ -70,19 +70,87 @@ def validate_instereo2k(exp_root, onnx_prefix, left, right, disp_gt):
     ]
     calibrated_model = load_model(os.path.join(exp_root, "%s_calibrated_model.onnx" % onnx_prefix))
     calibration_nodes = calibrated_model.graph.type2nodes["HzCalibration"]
-    for node in calibration_nodes:
+    # for node in calibration_nodes:
+    for node in calibrated_model.graph.nodes:
+
         # if node.tensor_type == "weight":
         #     node.qtype = "int16"
-        # if node.tensor_type == "featuremap":
+        # if node.tensor_type == "feature":
         #     node.qtype = "int16"
         if node.name in [
-            "onnx::Conv_2747_HzCalibration",
-            "onnx::Conv_2864_HzCalibration",
-            "onnx::Conv_2750_HzCalibration",
-            "/get_initdisp/GEMMvariable_2921_conv_weight_HzCalibration",
-            "onnx::Conv_2867_HzCalibration",
-            "refinement.update_block.encoder.convd1.weight_/refinement/update_block/encoder/convd1/Conv_HzCalibration",
-            "refinement.update_block.encoder.convd1.weight_/refinement/update_block/encoder/convd1_1/Conv_HzCalibration",
+            # "/get_initdisp/GEMM_split0",
+            # "/get_initdisp/GEMM_split1",
+            # "/backbone/mod2/mod2.0/head_layer/conv/conv.1/conv.1.0/Conv",
+            # "/backbone/mod2/mod2.0/head_layer/conv/conv.0/conv.0.2/Relu",
+            # "/backbone/mod2/mod2.0/head_layer/conv/conv.0/conv.0.0/Conv_split_add0",
+            # "/backbone/mod2/mod2.0/head_layer/conv/conv.1/conv.1.0_1/Conv",
+            # "/refinement/update_block/encoder/convd1_1/Conv_split0",
+            # "/refinement/update_block/encoder/convd1_1/Conv_split1",
+            # "/backbone/mod2/mod2.0/head_layer/conv/conv.0/conv.0.2_1/Relu",
+            # "/backbone/mod2/mod2.0/head_layer/conv/conv.0/conv.0.0_1/Conv_split_add0",
+            # "/cost_agg/feature_att_8/feat_att/feat_att.0/LeakyRelu",
+            # "/cost_agg/feature_att_8/feat_att/feat_att.1/Conv",
+            # "/backbone/mod6/mod6.0/head_layer/Add",
+            # "/backbone/mod6/mod6.0/stack_layers/stack_layers.0/Add",
+            # "/backbone/mod6/mod6.0/head_layer/relu/Relu",
+            # "/refinement/update_block/encoder/convd1/Conv_split0",
+            # "/refinement/update_block/encoder/convd1/Conv_split1",
+            # "/get_initdisp/classifier/LeakyRelu",
+            # "/cost_agg/conv1/conv1.0/LeakyRelu",
+            # "/cost_agg/conv1/conv1.1/conv/Conv",
+            # "/backbone/mod2/mod2.0/head_layer/conv/conv.0/conv.0.0/Conv_split0",
+            # "/backbone/mod2/mod2.0/head_layer/conv/conv.0/conv.0.0/Conv_split1",
+            # "/get_initdisp/Softmax_reducemax_FROM_QUANTIZED_SOFTMAX",
+            # "/get_initdisp/Softmax_sub_FROM_QUANTIZED_SOFTMAX",
+            # "/cost_agg/conv2/conv2.1/LeakyRelu",
+            # "/cost_agg/feature_att_16/Mul",
+            # "/backbone/mod3/mod3.0/head_layer/downsample/downsample.0/Conv",
+            # "/refinement/update_block/gru/convq/Conv",
+            # "/get_initdisp/Softmax",
+            # "/refinement/Softmax",
+            # "/refinement/interp_conv/depth2space_1/DepthToSpace",
+
+            "/get_initdisp/GEMM_/get_initdisp/GEMM_pre_reshape_output_transpose_in_calibrated_HzCalibration",
+            "variable_1386_HzCalibration",
+            "/backbone/mod2/mod2.0/head_layer/conv/conv.0/conv.0.2/Relu_output_0_calibrated_HzCalibration",
+            "/backbone/mod2/mod2.0/head_layer/conv/conv.0/conv.0.2/Relu_output_0_HzCalibration",
+            "variable_1384_HzCalibration",
+            "variable_1380_HzCalibration",
+            "variable_1380_calibrated_HzCalibration",
+            "/backbone/mod2/mod2.0/head_layer/conv/conv.0/conv.0.2_1/Relu_output_0_calibrated_HzCalibration",
+            "/refinement/Add_output_0_calibrated_HzCalibration",
+            "variable_1396_HzCalibration",
+            "/backbone/mod2/mod2.0/head_layer/conv/conv.0/conv.0.2_1/Relu_output_0_HzCalibration",
+            "variable_1392_HzCalibration",
+            "variable_1392_calibrated_HzCalibration"
+            "/cost_agg/feature_att_8/feat_att/feat_att.0/conv/Conv_output_0_HzCalibration",
+            "/cost_agg/feature_att_8/feat_att/feat_att.0/LeakyRelu_output_0_HzCalibration",
+            "/cost_agg/feature_att_8/feat_att/feat_att.0/conv/Conv_output_0_calibrated_HzCalibration",
+            "/cost_agg/feature_att_8/feat_att/feat_att.0/conv/conv.1/conv.1.0/Conv_output_0_HzCalibration",
+            "/backbone/mod6/mod6.0/head_layer/conv/conv.1/conv.1.0/Conv_output_0_HzCalibration",
+            "/backbone/mod6/mod6.0/head_layer/relu/Relu_output_0_HzCalibration",
+            "/backbone/mod6/mod6.0/head_layer/Add_output_0_HzCalibration",
+            "/get_initdisp/classifier/conv/Conv_output_0_HzCalibration",
+            "variable_2926_calibrated_HzCalibration",
+            "/get_initdisp/classifier/LeakyRelu_output_0_HzCalibration",
+            "/get_initdisp/classifier/conv/Conv_output_0_calibrated_HzCalibration",
+            "/backbone/mod6/mod6.0/head_layer/conv/conv.1/conv.1.0/Conv_output_0_calibrated_HzCalibration",
+            "/cost_agg/conv1/conv1.0/conv/Conv_output_0_HzCalibration",
+            "/cost_agg/conv1/conv1.0/LeakyRelu_output_0_HzCalibration",
+            "/cost_agg/agg_1/agg_1.0/conv/Conv_output_0_calibrated_HzCalibration",
+            "/cost_agg/conv2/conv2.1/conv/Conv_output_0_HzCalibration",
+            "/cost_agg/conv2/conv2.0/conv/Conv_output_0_HzCalibration",
+            "variable_1372_calibrated_HzCalibration",
+            "/cost_agg/conv2/conv2.1/conv/Conv_output_0_calibrated_HzCalibration",
+            "/cost_agg/conv2/conv2.1/LeakyRelu_output_0_HzCalibration",
+
+            # "onnx::Conv_2747_HzCalibration",
+            # "onnx::Conv_2864_HzCalibration",
+            # "onnx::Conv_2750_HzCalibration",
+            # "/get_initdisp/GEMMvariable_2921_conv_weight_HzCalibration",
+            # "onnx::Conv_2867_HzCalibration",
+            # "refinement.update_block.encoder.convd1.weight_/refinement/update_block/encoder/convd1/Conv_HzCalibration",
+            # "refinement.update_block.encoder.convd1.weight_/refinement/update_block/encoder/convd1_1/Conv_HzCalibration",
             # "/get_initdisp/GEMMvariable_2921_conv_weight_HzCalibration",
             # "refinement.update_block.encoder.convd1.weight_/refinement/update_block/encoder/convd1_1/Conv_HzCalibration",
             # "refinement.update_block.gru.convq.weight_/refinement/update_block/gru/convq_1/Conv_HzCalibration",
@@ -139,6 +207,6 @@ if __name__ == '__main__':
     left = np.fromfile("/home/fa.fu/work/mmdlp/tools/horizon/DStereov2/test/onnxcheck_left.npy", dtype=np.uint8).reshape(1, 352, 640, 3)
     right = np.fromfile("/home/fa.fu/work/mmdlp/tools/horizon/DStereov2/test/onnxcheck_right.npy", dtype=np.uint8).reshape(1, 352, 640, 3)
     disp_gt = torch.from_numpy(np.fromfile("/home/fa.fu/work/mmdlp/tools/horizon/DStereov2/test/onnxcheck_disp_gt.npy", dtype=np.float32).reshape(352, 640))
-    exp_root = "/home/fa.fu/work/work_dirs/horizon/DStereov2/20241216/output_v1/"
+    exp_root = "/home/fa.fu/work/work_dirs/horizon/DStereov2/20241216/output_v5/"
     onnx_prefix = 'PTQ_check_yuv444'
     validate_instereo2k(exp_root, onnx_prefix, left, right, disp_gt)
