@@ -289,6 +289,54 @@ def validate_instereo2k(exp_root, onnx_prefix, left, right, disp_gt):
             "/refinement/update_block/disp_head/conv1/Conv",
             "/refinement/update_block/disp_head/conv2/Conv",
 
+
+            # 第二次添加
+            "/get_initdisp/classifier/conv/Conv",
+            "/refinement/update_block/encoder/convd2_1/Conv",
+            "/refinement/update_block/gru/convz_1/Conv",
+            "/refinement/update_block/encoder/conv_1/Conv",
+            "/refinement/update_block/gru/convr_1/Conv",
+            "/refinement/update_block/disp_head/conv1_1/Conv",
+            "/refinement/update_block/disp_head/conv2_1/Conv",
+            "/refinement/update_block/mask_feat_4/mask_feat_4.0/Conv",
+            "/refinement/spx_2_gru/conv2/conv/Conv",
+            "/refinement/update_block/encoder/convd1/Conv_split1",
+            "/refinement/update_block/encoder/convd1/Conv_split0",
+            "/backbone/mod3/mod3.0/stack_layers/stack_layers.0/conv/conv.0/conv.0.0/Conv",
+
+
+            # 容忍误差较小 0.91
+            "/refinement/update_block/encoder/convd1_1/Conv_split1",
+            "/refinement/update_block/encoder/convd1_1/Conv_split0",
+            "/backbone/mod3/mod3.0/stack_layers/stack_layers.1/conv/conv.0/conv.0.0/Conv",
+            "/backbone/mod3/mod3.0/stack_layers/stack_layers.1/conv/conv.1/conv.1.0/Conv",
+            "/backbone/mod3/mod3.0/stack_layers/stack_layers.0/conv/conv.1/conv.1.0/Conv",
+            "/backbone/mod2/mod2.0/head_layer/conv/conv.0/conv.0.0/Conv_split1",
+            "/backbone/mod2/mod2.0/head_layer/conv/conv.0/conv.0.0/Conv_split0",
+            "/backbone/mod3/mod3.0/head_layer/conv/conv.1/conv.1.0/Conv",
+
+            # 容忍误差较大 0.92
+            "/backbone/mod1/mod1.0_1/Conv_split1",
+            "/backbone/mod1/mod1.0_1/Conv_split0",
+            "/backbone/mod1/mod1.0/Conv_split1",
+            "/backbone/mod1/mod1.0/Conv_split0",
+
+            # Bad 0.93 +
+            # "/refinement/Mul",
+            # "/refinement/update_block/gru/convq_1/Conv",
+            # "/refinement/unfold_conv/unflod_conv/Conv",
+            # "/refinement/interp_conv/conv/Conv",
+            # "/refinement/interp_conv/conv_1/Conv",
+            # "/get_initdisp/GEMM_split1",
+            # "/get_initdisp/GEMM_split0",
+            # "/backbone/mod2/mod2.0/head_layer/conv/conv.0/conv.0.0_1/Conv_split1",
+            # "/backbone/mod2/mod2.0/head_layer/conv/conv.0/conv.0.0_1/Conv_split0",
+            # "/backbone/mod2/mod2.0/head_layer/conv/conv.1/conv.1.0/Conv",
+            # "/backbone/mod3/mod3.0/head_layer/downsample/downsample.0/Conv",
+            # "/backbone/mod3/mod3.0/head_layer/conv/conv.0/conv.0.0/Conv",
+
+
+
         ]:
             for ii in range(len(node.inputs)):
                 input_calib = find_input_calibration(node, ii)
