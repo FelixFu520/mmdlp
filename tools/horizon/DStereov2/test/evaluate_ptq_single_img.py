@@ -134,6 +134,6 @@ if __name__ == '__main__':
     left = np.fromfile("/home/fa.fu/work/mmdlp/tools/horizon/DStereov2/test/onnxcheck_left.npy", dtype=np.uint8).reshape(1, 352, 640, 3)
     right = np.fromfile("/home/fa.fu/work/mmdlp/tools/horizon/DStereov2/test/onnxcheck_right.npy", dtype=np.uint8).reshape(1, 352, 640, 3)
     disp_gt = torch.from_numpy(np.fromfile("/home/fa.fu/work/mmdlp/tools/horizon/DStereov2/test/onnxcheck_disp_gt.npy", dtype=np.float32).reshape(352, 640))
-    exp_root = "/home/fa.fu/work/work_dirs/horizon/DStereov2/20241216/output_v12/"
+    exp_root = "/home/fa.fu/work/work_dirs/horizon/DStereov2/20241216/output_v22/"
     onnx_prefix = 'PTQ_check_yuv444'
     validate_instereo2k(exp_root, onnx_prefix, left, right, disp_gt)

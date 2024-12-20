@@ -9,8 +9,8 @@ from horizon_tc_ui.data.transformer import *
 
 
 def test1():
-    output_disp_npy = "/home/fa.fu/work/work_dirs/horizon/DStereov2/20241210/output_v1/infer_result/model_infer_output_0_disp.bin"
-    output_spx_npy = "/home/fa.fu/work/work_dirs/horizon/DStereov2/20241210/output_v1/infer_result/model_infer_output_1_spx.bin"
+    output_disp_npy = "/root/model_infer_output_0_disp.bin"
+    output_spx_npy = "/root/model_infer_output_1_spx.bin"
     onnx_disp_path = "/home/fa.fu/work/work_dirs/horizon/DStereov2/20241210/output_v1/infer_result/disp_unfold.npy"
     onnx_spx_path = "/home/fa.fu/work/work_dirs/horizon/DStereov2/20241210/output_v1/infer_result/spx.npy"
 
@@ -19,8 +19,8 @@ def test1():
     spx = np.load(onnx_spx_path)
 
     # bin 输出
-    disp_bin = np.fromfile(output_disp_npy, dtype=np.float32).reshape(1, 9, 352, 640)
-    spx_bin = np.fromfile(output_spx_npy, dtype=np.float32).reshape(1, 9, 352, 640)
+    disp_bin = np.fromfile(output_disp_npy, dtype=np.int16).reshape(1, 9, 352, 640)
+    spx_bin = np.fromfile(output_spx_npy, dtype=np.int16).reshape(1, 9, 352, 640)
 
     print(f"disp diff max: {np.max(np.abs(disp - disp_bin))}")
     print(f"spx diff max: {np.max(np.abs(spx - spx_bin))}")
@@ -111,7 +111,7 @@ def test3():
 if __name__ == "__main__":
     print("----------------直接从npy中读取quant onnx推理结果----------------")
     test1()
-    print("----------------使用quant onnx 重新推理, 使用evaluate_ptq.py脚本中的前处理----------------")
-    test2()
-    print("----------------使用quant onnx 重新推理, 使用重新写的前处理----------------")
-    test3()
+    # print("----------------使用quant onnx 重新推理, 使用evaluate_ptq.py脚本中的前处理----------------")
+    # test2()
+    # print("----------------使用quant onnx 重新推理, 使用重新写的前处理----------------")
+    # test3()
