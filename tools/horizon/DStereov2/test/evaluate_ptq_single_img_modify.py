@@ -304,22 +304,24 @@ def validate_instereo2k(exp_root, onnx_prefix, left, right, disp_gt):
             "/refinement/update_block/encoder/convd1/Conv_split0",
             "/backbone/mod3/mod3.0/stack_layers/stack_layers.0/conv/conv.0/conv.0.0/Conv",
 
+            # 非conv
+            # "/backbone/mod6/mod6.0/head_layer/Add",
+            
+            # # 容忍误差较小 0.91
+            # "/refinement/update_block/encoder/convd1_1/Conv_split1",
+            # "/refinement/update_block/encoder/convd1_1/Conv_split0",
+            # "/backbone/mod3/mod3.0/stack_layers/stack_layers.1/conv/conv.0/conv.0.0/Conv",
+            # "/backbone/mod3/mod3.0/stack_layers/stack_layers.1/conv/conv.1/conv.1.0/Conv",
+            # "/backbone/mod3/mod3.0/stack_layers/stack_layers.0/conv/conv.1/conv.1.0/Conv",
+            # "/backbone/mod2/mod2.0/head_layer/conv/conv.0/conv.0.0/Conv_split1",
+            # "/backbone/mod2/mod2.0/head_layer/conv/conv.0/conv.0.0/Conv_split0",
+            # "/backbone/mod3/mod3.0/head_layer/conv/conv.1/conv.1.0/Conv",
 
-            # 容忍误差较小 0.91
-            "/refinement/update_block/encoder/convd1_1/Conv_split1",
-            "/refinement/update_block/encoder/convd1_1/Conv_split0",
-            "/backbone/mod3/mod3.0/stack_layers/stack_layers.1/conv/conv.0/conv.0.0/Conv",
-            "/backbone/mod3/mod3.0/stack_layers/stack_layers.1/conv/conv.1/conv.1.0/Conv",
-            "/backbone/mod3/mod3.0/stack_layers/stack_layers.0/conv/conv.1/conv.1.0/Conv",
-            "/backbone/mod2/mod2.0/head_layer/conv/conv.0/conv.0.0/Conv_split1",
-            "/backbone/mod2/mod2.0/head_layer/conv/conv.0/conv.0.0/Conv_split0",
-            "/backbone/mod3/mod3.0/head_layer/conv/conv.1/conv.1.0/Conv",
-
-            # 容忍误差较大 0.92
-            "/backbone/mod1/mod1.0_1/Conv_split1",
-            "/backbone/mod1/mod1.0_1/Conv_split0",
-            "/backbone/mod1/mod1.0/Conv_split1",
-            "/backbone/mod1/mod1.0/Conv_split0",
+            # # 容忍误差较大 0.92
+            # "/backbone/mod1/mod1.0_1/Conv_split1",
+            # "/backbone/mod1/mod1.0_1/Conv_split0",
+            # "/backbone/mod1/mod1.0/Conv_split1",
+            # "/backbone/mod1/mod1.0/Conv_split0",
 
             # Bad 0.93 +
             # "/refinement/Mul",
@@ -390,6 +392,6 @@ if __name__ == '__main__':
     left = np.fromfile("/home/fa.fu/work/mmdlp/tools/horizon/DStereov2/test/onnxcheck_left.npy", dtype=np.uint8).reshape(1, 352, 640, 3)
     right = np.fromfile("/home/fa.fu/work/mmdlp/tools/horizon/DStereov2/test/onnxcheck_right.npy", dtype=np.uint8).reshape(1, 352, 640, 3)
     disp_gt = torch.from_numpy(np.fromfile("/home/fa.fu/work/mmdlp/tools/horizon/DStereov2/test/onnxcheck_disp_gt.npy", dtype=np.float32).reshape(352, 640))
-    exp_root = "/home/fa.fu/work/work_dirs/horizon/DStereov2/20241216/output_v2/"
+    exp_root = "/home/fa.fu/work/work_dirs/horizon/DStereov2/20241216/output_v20/"
     onnx_prefix = 'PTQ_check_yuv444'
     validate_instereo2k(exp_root, onnx_prefix, left, right, disp_gt)
