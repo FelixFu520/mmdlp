@@ -45,7 +45,7 @@ def gen_calibration_data_nv12(data_dir: str, save_dir: str, height: int = 640, w
         )
         image = image[np.newaxis, ...]
         image = image * 255 # 因为nv12输入需要整数的float, 所以这里乘以255; 减均值除方差的过程放到校准过程中, 放到onnx里面了
-        image = image[:, [2, 1, 0], ...]
+        # image = image[:, [2, 1, 0], ...]
         assert image.shape == (1, 3, height, width)
         image.tofile(os.path.join(save_dir, os.path.basename(image_path)[:-4] + ".npy"))
 

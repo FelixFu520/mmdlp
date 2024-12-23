@@ -23,7 +23,7 @@ def infer_onnx(onnx_model_path: str, image_path: str, result_dir: str = "./", he
         width=width,
         )
     image = np.expand_dims(image, axis=0)
-    image = image[:, [2, 1, 0], ...]
+    # image = image[:, [2, 1, 0], ...]
     image_show = (image * 255).astype(np.uint8)
     # infer
     feed_dict = {
@@ -69,7 +69,7 @@ def infer_origin_onnx(onnx_model_path: str, image_path: str, result_dir: str = "
         width=width,
     )
     image = np.expand_dims(image, axis=0)
-    image = image[:, [2, 1, 0], ...]
+    # image = image[:, [2, 1, 0], ...]
     image_show = (image * 255).astype(np.uint8)
     input_data = image
     # fun_t = RGB2YUV444Transformer(data_format="CHW")
@@ -175,7 +175,7 @@ def infer_calib_onnx(onnx_model_path: str, image_path: str, result_dir: str = ".
     )
     image = image * 255
     image = np.expand_dims(image, axis=0)
-    image = image[:, [2, 1, 0], ...]
+    # image = image[:, [2, 1, 0], ...]
     image_show = image.astype(np.uint8)
     input_data = image
     # fun_t = RGB2YUV444Transformer(data_format="CHW")
@@ -229,7 +229,7 @@ def infer_quant_onnx(onnx_model_path: str, image_path: str, result_dir: str = ".
     )
     image = image * 255
     image = np.expand_dims(image, axis=0)
-    image = image[:, [2, 1, 0], ...]
+    # image = image[:, [2, 1, 0], ...]
     image_show = image.astype(np.uint8)
     input_data = image
     # if not lossy:
