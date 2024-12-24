@@ -115,32 +115,110 @@ def infer_image(image_path, args):
                 raise ValueError("args error")
         infer_onnx(args.onnx_float_path, image_path, preprocess_fix, postprocess_fix)
     
-    # if args.onnx_origin_path:
-    #     def preprocess_fix(image_path, height=args.height, width=args.width) -> np.ndarray:
-    #         if args.preprocess == "v1":
-    #             image = preprocess_custom_v1(image_path, height, width)
-    #             image = image * 255
-    #             fun_t = RGB2YUV444Transformer(data_format="CHW")
-    #             image = fun_t(image)
-    #             image = np.expand_dims(image, axis=0)
-    #         # elif args.preprocess == "v2":
-    #         #     preprocess_custom_v2(image_path, height, width)
-    #         #     image = np.expand_dims(image, axis=0)
-    #         else:
-    #             raise ValueError("args error")
-    #         return image
-    #     def postprocess_fix(image, outputs, image_path, work_dir=args.work_dir, onnx_type="origin", score_threshold=args.score_threshold, iou_threshold=args.iou_threshold) -> None:
-    #         save_dir_path = os.path.join(work_dir, "demo_result")
-    #         if args.preprocess == "v1":
-    #             image_show = image.astype(np.uint8)
-    #             post_process(image_show, outputs, image_path, save_dir_path, onnx_type, score_threshold, iou_threshold)
-    #         elif args.preprocess == "v2":
-    #             post_process(image_show, outputs, image_path, save_dir_path, onnx_type, score_threshold, iou_threshold)
-    #         else:
-    #             raise ValueError("args error")
-    #     infer_onnx(args.onnx_origin_path, image_path, preprocess_fix, postprocess_fix)
+    if args.onnx_origin_path:
+        npy_dir_path = os.path.join(work_dir, "origin_npy")
+        def preprocess_fix(image_path, height=args.height, width=args.width) -> np.ndarray:
+            if args.preprocess == "v1" and args.train == "featuremap" and args.rt == "featuremap":
+                image = preprocess_custom_v1(image_path, height, width)
+                image = np.expand_dims(image, axis=0)
+            elif args.preprocess == "v2" and args.train == "featuremap" and args.rt == "featuremap":
+                image = preprocess_custom_v2(image_path, height, width)
+                image = np.expand_dims(image, axis=0)
+            else:
+                raise ValueError("args error")
+            return image
+        def postprocess_fix(image, outputs, image_path, onnx_type="origin", 
+                            npy_dir=npy_dir_path, show_dir=show_dir_path,
+                            iou_threshold=args.iou_threshold, 
+                            score_threshold=args.score_threshold,
+                            classes=args.classes) -> None:
+            if args.preprocess == "v1":
+                image_show = (image*255).astype(np.uint8)
+                post_process(image_show, outputs, image_path, show_dir=show_dir, npy_dir=npy_dir, onnx_type=onnx_type, score_threshold=score_threshold, iou_threshold=iou_threshold, classes=classes)
+            elif args.preprocess == "v2":
+                image_show = (image * 255).astype(np.uint8) # [1, 3, H, W], RGB, 0-255
+                post_process(image_show, outputs, image_path, show_dir=show_dir, npy_dir=npy_dir, onnx_type=onnx_type, score_threshold=score_threshold, iou_threshold=iou_threshold, classes=classes)
+            else:
+                raise ValueError("args error")
+        infer_onnx(args.onnx_origin_path, image_path, preprocess_fix, postprocess_fix)
 
+    if args.onnx_optim_path:
+        npy_dir_path = os.path.join(work_dir, "optim_npy")
+        def preprocess_fix(image_path, height=args.height, width=args.width) -> np.ndarray:
+            if args.preprocess == "v1" and args.train == "featuremap" and args.rt == "featuremap":
+                image = preprocess_custom_v1(image_path, height, width)
+                image = np.expand_dims(image, axis=0)
+            elif args.preprocess == "v2" and args.train == "featuremap" and args.rt == "featuremap":
+                image = preprocess_custom_v2(image_path, height, width)
+                image = np.expand_dims(image, axis=0)
+            else:
+                raise ValueError("args error")
+            return image
+        def postprocess_fix(image, outputs, image_path, onnx_type="optim",
+                            npy_dir=npy_dir_path, show_dir=show_dir_path,
+                            iou_threshold=args.iou_threshold, 
+                            score_threshold=args.score_threshold,
+                            classes=args.classes) -> None:
+            if args.preprocess == "v1":
+                image_show = (image*255).astype(np.uint8)
+                post_process(image_show, outputs, image_path, show_dir=show_dir, npy_dir=npy_dir, onnx_type=onnx_type, score_threshold=score_threshold, iou_threshold=iou_threshold, classes=classes)
+            elif args.preprocess == "v2":
+                image_show = (image * 255).astype(np.uint8)
+        infer_onnx(args.onnx_optim_path, image_path, preprocess_fix, postprocess_fix)
     
+    if args.onnx_calib_path:
+        npy_dir_path = os.path.join(work_dir, "calib_npy")
+        def preprocess_fix(image_path, height=args.height, width=args.width) -> np.ndarray:
+            if args.preprocess == "v1" and args.train == "featuremap" and args.rt == "featuremap":
+                image = preprocess_custom_v1(image_path, height, width)
+                image = np.expand_dims(image, axis=0)
+            elif args.preprocess == "v2" and args.train == "featuremap" and args.rt == "featuremap":
+                image = preprocess_custom_v2(image_path, height, width)
+                image = np.expand_dims(image, axis=0)
+            else:
+                raise ValueError("args error")
+            return image
+        def postprocess_fix(image, outputs, image_path, onnx_type="calib",
+                            npy_dir=npy_dir_path, show_dir=show_dir_path,
+                            iou_threshold=args.iou_threshold, 
+                            score_threshold=args.score_threshold,
+                            classes=args.classes) -> None:
+            if args.preprocess == "v1":
+                image_show = (image*255).astype(np.uint8)
+                post_process(image_show, outputs, image_path, show_dir=show_dir, npy_dir=npy_dir, onnx_type=onnx_type, score_threshold=score_threshold, iou_threshold=iou_threshold, classes=classes)
+            elif args.preprocess == "v2":
+                image_show = (image * 255).astype(np.uint8)
+                post_process(image_show, outputs, image_path, show_dir=show_dir, npy_dir=npy_dir, onnx_type=onnx_type, score_threshold=score_threshold, iou_threshold=iou_threshold, classes=classes)
+            else:
+                raise ValueError("args error")
+        infer_onnx(args.onnx_calib_path, image_path, preprocess_fix, postprocess_fix)
+
+    if args.onnx_quant_path:
+        npy_dir_path = os.path.join(work_dir, "quant_npy")
+        def preprocess_fix(image_path, height=args.height, width=args.width) -> np.ndarray:
+            if args.preprocess == "v1" and args.train == "featuremap" and args.rt == "featuremap":
+                image = preprocess_custom_v1(image_path, height, width)
+                image = np.expand_dims(image, axis=0)
+            elif args.preprocess == "v2" and args.train == "featuremap" and args.rt == "featuremap":
+                image = preprocess_custom_v2(image_path, height, width)
+                image = np.expand_dims(image, axis=0)
+            else:
+                raise ValueError("args error")
+            return image
+        def postprocess_fix(image, outputs, image_path, onnx_type="quant",
+                            npy_dir=npy_dir_path, show_dir=show_dir_path,
+                            iou_threshold=args.iou_threshold, 
+                            score_threshold=args.score_threshold,
+                            classes=args.classes) -> None:
+            if args.preprocess == "v1":
+                image_show = (image*255).astype(np.uint8)
+                post_process(image_show, outputs, image_path, show_dir=show_dir, npy_dir=npy_dir, onnx_type=onnx_type, score_threshold=score_threshold, iou_threshold=iou_threshold, classes=classes)
+            elif args.preprocess == "v2":
+                image_show = (image * 255).astype(np.uint8)
+                post_process(image_show, outputs, image_path, show_dir=show_dir, npy_dir=npy_dir, onnx_type=onnx_type, score_threshold=score_threshold, iou_threshold=iou_threshold, classes=classes)
+            else:
+                raise ValueError("args error")
+        infer_onnx(args.onnx_quant_path, image_path, preprocess_fix, postprocess_fix)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="infer images")

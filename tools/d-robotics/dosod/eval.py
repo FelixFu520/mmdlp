@@ -323,12 +323,8 @@ if __name__ == "__main__":
     parser.add_argument('--pred_npy_dir', type=str, default="/home/users/fa.fu/work/work_dirs/dosod/20241103/eval_quant", help='The directory of the prediction numpy files')
     parser.add_argument('--data_dir', type=str, default="/home/users/fa.fu/work/data/dosod_eval_dataset/", help='The directory of the dataset')
     parser.add_argument('--ann_file', type=str, default="real_resize_coco_jpg_20241103.json", help='The annotation file of the dataset')
-    parser.add_argument("--height", type=int,
-                        default=640,
-                        help="height")
-    parser.add_argument("--width", type=int,
-                        default=640,
-                        help="width")
+    parser.add_argument("--height", type=int,  default=640, help="height")
+    parser.add_argument("--width", type=int,    default=640, help="width")
     parser.add_argument('--save_pickle_path', type=str, default="")
     parser.add_argument('--classes', type=str, default="water stain;colored stain;white stain;ketchup stain;mixed stain;solid stain;skein", help='The classes of the dataset')
     args = parser.parse_args()
