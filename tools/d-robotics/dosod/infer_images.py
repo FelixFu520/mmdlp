@@ -107,12 +107,11 @@ def infer_image(image_path, args):
                             classes=args.classes) -> None:
             if args.preprocess == "v1":
                 image_show = (image * 255).astype(np.uint8) # [1, 3, H, W], RGB, 0-255
-                post_process(image_show, outputs, image_path, show_dir=show_dir, npy_dir=npy_dir, onnx_type=onnx_type, score_threshold=score_threshold, iou_threshold=iou_threshold, classes=classes)
             elif args.preprocess == "v2":
                 image_show = (image * 255).astype(np.uint8) # [1, 3, H, W], RGB, 0-255
-                post_process(image_show, outputs, image_path, show_dir=show_dir, npy_dir=npy_dir, onnx_type=onnx_type, score_threshold=score_threshold, iou_threshold=iou_threshold, classes=classes)
             else:
                 raise ValueError("args error")
+            post_process(image_show, outputs, image_path, show_dir=show_dir, npy_dir=npy_dir, onnx_type=onnx_type, score_threshold=score_threshold, iou_threshold=iou_threshold, classes=classes)
         infer_onnx(args.onnx_float_path, image_path, preprocess_fix, postprocess_fix)
     
     if args.onnx_origin_path:
@@ -124,6 +123,17 @@ def infer_image(image_path, args):
             elif args.preprocess == "v2" and args.train == "featuremap" and args.rt == "featuremap":
                 image = preprocess_custom_v2(image_path, height, width)
                 image = np.expand_dims(image, axis=0)
+            elif args.preprocess == "v1" and args.train == "rgb" and args.rt == "nv12":
+                image = preprocess_custom_v1(image_path, height, width)
+                image = image * 255 # 反归一化
+                image = RGB2YUV444Transformer(data_format="CHW").run_transform(image)
+                image = np.expand_dims(image, axis=0)
+            elif args.preprocess == "v2" and args.train == "yuv444" and args.rt == "nv12":
+                image = preprocess_custom_v2(image_path, height, width)
+                image = image * 255
+                image = image.astype(np.uint8)
+                image = np.expand_dims(image, axis=0)
+
             else:
                 raise ValueError("args error")
             return image
@@ -132,14 +142,18 @@ def infer_image(image_path, args):
                             iou_threshold=args.iou_threshold, 
                             score_threshold=args.score_threshold,
                             classes=args.classes) -> None:
-            if args.preprocess == "v1":
+            if args.preprocess == "v1" and args.train == "featuremap" and args.rt == "featuremap":
                 image_show = (image*255).astype(np.uint8)
-                post_process(image_show, outputs, image_path, show_dir=show_dir, npy_dir=npy_dir, onnx_type=onnx_type, score_threshold=score_threshold, iou_threshold=iou_threshold, classes=classes)
-            elif args.preprocess == "v2":
+            elif args.preprocess == "v2" and args.train == "featuremap" and args.rt == "featuremap":
                 image_show = (image * 255).astype(np.uint8) # [1, 3, H, W], RGB, 0-255
-                post_process(image_show, outputs, image_path, show_dir=show_dir, npy_dir=npy_dir, onnx_type=onnx_type, score_threshold=score_threshold, iou_threshold=iou_threshold, classes=classes)
+            elif args.preprocess == "v1" and args.train == "rgb" and args.rt == "nv12":
+                image_show = image.astype(np.uint8)
+            elif args.preprocess == "v2" and args.train == "yuv444" and args.rt == "nv12":
+                image_show = image.astype(np.uint8)
             else:
                 raise ValueError("args error")
+            post_process(image_show, outputs, image_path, show_dir=show_dir, npy_dir=npy_dir, onnx_type=onnx_type, score_threshold=score_threshold, iou_threshold=iou_threshold, classes=classes)
+            
         infer_onnx(args.onnx_origin_path, image_path, preprocess_fix, postprocess_fix)
 
     if args.onnx_optim_path:
@@ -151,6 +165,17 @@ def infer_image(image_path, args):
             elif args.preprocess == "v2" and args.train == "featuremap" and args.rt == "featuremap":
                 image = preprocess_custom_v2(image_path, height, width)
                 image = np.expand_dims(image, axis=0)
+            elif args.preprocess == "v1" and args.train == "rgb" and args.rt == "nv12":
+                image = preprocess_custom_v1(image_path, height, width)
+                image = image * 255 # 反归一化
+                image = RGB2YUV444Transformer(data_format="CHW").run_transform(image)
+                image = np.expand_dims(image, axis=0)
+            elif args.preprocess == "v2" and args.train == "yuv444" and args.rt == "nv12":
+                image = preprocess_custom_v2(image_path, height, width)
+                image = image * 255
+                image = image.astype(np.uint8)
+                image = np.expand_dims(image, axis=0)
+
             else:
                 raise ValueError("args error")
             return image
@@ -159,11 +184,18 @@ def infer_image(image_path, args):
                             iou_threshold=args.iou_threshold, 
                             score_threshold=args.score_threshold,
                             classes=args.classes) -> None:
-            if args.preprocess == "v1":
+            if args.preprocess == "v1" and args.train == "featuremap" and args.rt == "featuremap":
                 image_show = (image*255).astype(np.uint8)
-                post_process(image_show, outputs, image_path, show_dir=show_dir, npy_dir=npy_dir, onnx_type=onnx_type, score_threshold=score_threshold, iou_threshold=iou_threshold, classes=classes)
-            elif args.preprocess == "v2":
+            elif args.preprocess == "v2" and args.train == "featuremap" and args.rt == "featuremap":
                 image_show = (image * 255).astype(np.uint8)
+            elif args.preprocess == "v1" and args.train == "rgb" and args.rt == "nv12":
+                image_show = image.astype(np.uint8)
+            elif args.preprocess == "v2" and args.train == "yuv444" and args.rt == "nv12":
+                image_show = image.astype(np.uint8)
+            else:
+                raise ValueError("args error")
+            post_process(image_show, outputs, image_path, show_dir=show_dir, npy_dir=npy_dir, onnx_type=onnx_type, score_threshold=score_threshold, iou_threshold=iou_threshold, classes=classes)
+            
         infer_onnx(args.onnx_optim_path, image_path, preprocess_fix, postprocess_fix)
     
     if args.onnx_calib_path:
@@ -175,6 +207,17 @@ def infer_image(image_path, args):
             elif args.preprocess == "v2" and args.train == "featuremap" and args.rt == "featuremap":
                 image = preprocess_custom_v2(image_path, height, width)
                 image = np.expand_dims(image, axis=0)
+            elif args.preprocess == "v1" and args.train == "rgb" and args.rt == "nv12":
+                image = preprocess_custom_v1(image_path, height, width)
+                image = image * 255 # 反归一化
+                image = RGB2YUV444Transformer(data_format="CHW").run_transform(image)
+                image = np.expand_dims(image, axis=0)
+            elif args.preprocess == "v2" and args.train == "yuv444" and args.rt == "nv12":
+                image = preprocess_custom_v2(image_path, height, width)
+                image = image * 255
+                image = image.astype(np.uint8)
+                image = np.expand_dims(image, axis=0)
+
             else:
                 raise ValueError("args error")
             return image
@@ -183,14 +226,18 @@ def infer_image(image_path, args):
                             iou_threshold=args.iou_threshold, 
                             score_threshold=args.score_threshold,
                             classes=args.classes) -> None:
-            if args.preprocess == "v1":
+            if args.preprocess == "v1" and args.train == "featuremap" and args.rt == "featuremap":
                 image_show = (image*255).astype(np.uint8)
-                post_process(image_show, outputs, image_path, show_dir=show_dir, npy_dir=npy_dir, onnx_type=onnx_type, score_threshold=score_threshold, iou_threshold=iou_threshold, classes=classes)
-            elif args.preprocess == "v2":
+            elif args.preprocess == "v2" and args.train == "featuremap" and args.rt == "featuremap":
                 image_show = (image * 255).astype(np.uint8)
-                post_process(image_show, outputs, image_path, show_dir=show_dir, npy_dir=npy_dir, onnx_type=onnx_type, score_threshold=score_threshold, iou_threshold=iou_threshold, classes=classes)
+            elif args.preprocess == "v1" and args.train == "rgb" and args.rt == "nv12":
+                image_show = image.astype(np.uint8)
+            elif args.preprocess == "v2" and args.train == "yuv444" and args.rt == "nv12":
+                image_show = image.astype(np.uint8)
             else:
                 raise ValueError("args error")
+            post_process(image_show, outputs, image_path, show_dir=show_dir, npy_dir=npy_dir, onnx_type=onnx_type, score_threshold=score_threshold, iou_threshold=iou_threshold, classes=classes)
+            
         infer_onnx(args.onnx_calib_path, image_path, preprocess_fix, postprocess_fix)
 
     if args.onnx_quant_path:
@@ -202,6 +249,23 @@ def infer_image(image_path, args):
             elif args.preprocess == "v2" and args.train == "featuremap" and args.rt == "featuremap":
                 image = preprocess_custom_v2(image_path, height, width)
                 image = np.expand_dims(image, axis=0)
+            elif args.preprocess == "v1" and args.train == "rgb" and args.rt == "nv12":
+                image = preprocess_custom_v1(image_path, height, width)
+                image = image * 255 # 反归一化
+                image = RGB2NV12Transformer(data_format="CHW").run_transform(image)
+                image = NV12ToYUV444Transformer((height, width), yuv444_output_layout="CHW").run_transform(image)
+                image = np.expand_dims(image, axis=0)
+                image -= 128
+                image = image.astype(np.int8)
+                image = image.transpose(0, 2, 3, 1)
+            elif args.preprocess == "v2" and args.train == "yuv444" and args.rt == "nv12":
+                image = preprocess_custom_v2(image_path, height, width)
+                image = image * 255
+                image = np.expand_dims(image, axis=0)
+                image = image.astype(np.uint8)
+                image -= 128
+                image = image.astype(np.int8)
+                image = image.transpose(0, 2, 3, 1)
             else:
                 raise ValueError("args error")
             return image
@@ -210,14 +274,24 @@ def infer_image(image_path, args):
                             iou_threshold=args.iou_threshold, 
                             score_threshold=args.score_threshold,
                             classes=args.classes) -> None:
-            if args.preprocess == "v1":
+            if args.preprocess == "v1" and args.train == "featuremap" and args.rt == "featuremap":
                 image_show = (image*255).astype(np.uint8)
-                post_process(image_show, outputs, image_path, show_dir=show_dir, npy_dir=npy_dir, onnx_type=onnx_type, score_threshold=score_threshold, iou_threshold=iou_threshold, classes=classes)
-            elif args.preprocess == "v2":
+            elif args.preprocess == "v2" and args.train == "featuremap" and args.rt == "featuremap":
                 image_show = (image * 255).astype(np.uint8)
-                post_process(image_show, outputs, image_path, show_dir=show_dir, npy_dir=npy_dir, onnx_type=onnx_type, score_threshold=score_threshold, iou_threshold=iou_threshold, classes=classes)
+            elif args.preprocess == "v1" and args.train == "rgb" and args.rt == "nv12":
+                image_show = image.transpose(0, 3, 1, 2)
+                image_show = image_show.astype(np.float32)
+                image_show = image_show + 128
+                image_show = image_show.astype(np.uint8)
+            elif args.preprocess == "v2" and args.train == "yuv444" and args.rt == "nv12":
+                image_show = image.transpose(0, 3, 1, 2)
+                image_show = image_show.astype(np.float32)
+                image_show = image_show + 128
+                image_show = image_show.astype(np.uint8)
             else:
                 raise ValueError("args error")
+            post_process(image_show, outputs, image_path, show_dir=show_dir, npy_dir=npy_dir, onnx_type=onnx_type, score_threshold=score_threshold, iou_threshold=iou_threshold, classes=classes)
+            
         infer_onnx(args.onnx_quant_path, image_path, preprocess_fix, postprocess_fix)
 
 if __name__ == "__main__":
