@@ -64,7 +64,7 @@ coco_train_dataset = dict(
     _delete_=True,
     class_text_path='data/texts/kxj_class_texts_1204.json',
     dataset=dict(
-        ann_file='real_virtual_resize_coco_jpg_20241204.json',
+        ann_file='real_virtual_resize_coco_jpg_20241210.json',
         data_prefix=dict(img=''),
         data_root=
         '/horizon-bucket/d-robotics-bucket/AIOT_algorithm_data/train_stain_dataset',
@@ -742,7 +742,7 @@ train_dataloader = dict(
     dataset=dict(
         class_text_path='data/texts/kxj_class_texts_1204.json',
         dataset=dict(
-            ann_file='real_virtual_resize_coco_jpg_20241204.json',
+            ann_file='real_virtual_resize_coco_jpg_20241210.json',
             data_prefix=dict(img=''),
             data_root=
             '/horizon-bucket/d-robotics-bucket/AIOT_algorithm_data/train_stain_dataset',
@@ -1219,4 +1219,4 @@ visualizer = dict(
     ])
 weight_decay = 0.05
 widen_factor = 1.0
-work_dir = '/horizon-bucket/d-robotics-bucket/shiyuan.chen/workspace/train_jobs/kexuejia/joint_space_mlp3x_l_40e_8gpus_finetune_kxj_1204_sjt_generated_1024p/2024_12_05_14_10_18'
+work_dir = '/horizon-bucket/d-robotics-bucket/shiyuan.chen/workspace/train_jobs/kexuejia/joint_space_mlp3x_l_40e_8gpus_finetune_kxj_1210_sjt_generated_1024p/2024_12_10_21_03_55'
