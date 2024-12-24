@@ -46,7 +46,41 @@ def gen_calibration_data_v2_yuv444_featuremap(data_dir: str, save_dir: str, heig
         assert image.shape == (1, 3, height, width)
         image.tofile(os.path.join(save_dir, os.path.basename(image_path)[:-4] + ".npy"))
 
+def gen_calibration_data_v1_rgb_nv12(data_dir: str, save_dir: str, height: int = 640, width: int = 2048):
+    all_images = []
+    for classes_name in os.listdir(data_dir):
+        images = [os.path.join(data_dir, classes_name, p) for p in os.listdir(os.path.join(data_dir,classes_name)) if p.endswith("jpg") or p.endswith("JPG")]
+        all_images.extend(images)
+    os.makedirs(save_dir, exist_ok=True)
+    for image_path in tqdm(all_images, desc="Generate Calibration Data"):
+        image = preprocess_custom_v1(
+            image_path, 
+            height=height, 
+            width=width,
+        )
+        image = image[np.newaxis, ...]
+        image = image * 255 # 因为nv12输入需要整数的float, 所以这里乘以255; 减均值除方差的过程放到校准过程中, 放到onnx里面了
+        assert image.shape == (1, 3, height, width)
+        image.tofile(os.path.join(save_dir, os.path.basename(image_path)[:-4] + ".npy"))
 
+def gen_calibration_data_v2_yuv444_nv12(data_dir: str, save_dir: str, height: int = 640, width: int = 2048):
+    all_images = []
+    for classes_name in os.listdir(data_dir):
+        images = [os.path.join(data_dir, classes_name, p) for p in os.listdir(os.path.join(data_dir,classes_name)) if p.endswith("jpg") or p.endswith("JPG")]
+        all_images.extend(images)
+    os.makedirs(save_dir, exist_ok=True)
+    for image_path in tqdm(all_images, desc="Generate Calibration Data"):
+        image = preprocess_custom_v2(
+            image_path, 
+            height=height, 
+            width=width,
+        )
+        image = image[np.newaxis, ...]
+        image = image * 255 # 因为nv12输入需要整数的float, 所以这里乘以255; 减均值除方差的过程放到校准过程中, 放到onnx里面了
+        assert image.shape == (1, 3, height, width)
+        image.tofile(os.path.join(save_dir, os.path.basename(image_path)[:-4] + ".npy"))
+
+    
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate Calibration Data")
     parser.add_argument("--data_dir", type=str,  default= "./",  help="The directory of calibration images")
@@ -64,3 +98,9 @@ if __name__ == "__main__":
         gen_calibration_data_v1_rgb_featuremap(args.data_dir, save_dir=save_dir, height=args.height, width=args.width)
     elif args.preprocess == "v2" and args.train == "featuremap" and args.rt == "featuremap":
         gen_calibration_data_v2_yuv444_featuremap(args.data_dir, save_dir=save_dir, height=args.height, width=args.width)
+    elif args.preprocess == "v1" and args.train == "rgb" and args.rt == "nv12":
+        gen_calibration_data_v1_rgb_nv12(args.data_dir, save_dir=save_dir, height=args.height, width=args.width)
+    elif args.preprocess == "v2" and args.train == "yuv444" and args.rt == "nv12":
+        gen_calibration_data_v2_yuv444_nv12(args.data_dir, save_dir=save_dir, height=args.height, width=args.width)
+    else:
+        raise ValueError("Invalid arguments")
