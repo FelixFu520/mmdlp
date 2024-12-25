@@ -1,0 +1,988 @@
+model_parameters:
+  onnx_model: '/home/fa.fu/work/work_dirs/d-robotics/dosod/20241223/dosod-l_epoch_40_kxj_rep-without-nms_20241210_1024x1024_672x896_bgr_nv12_yuv444.onnx'
+  march: 'bayes-e'
+  output_model_file_prefix: 'dosod-l_epoch_40_kxj_rep-without-nms_20241210_1024x1024_672x896_bgr_nv12_yuv444'
+  working_dir: '/home/fa.fu/work/work_dirs/d-robotics/dosod/20241223/output_v5'
+  remove_node_type: 'Quantize;Dequantize;Transpose;Cast;Reshape'
+  layer_out_dump: False
+  # debug_mode: "dump_calibration_data" 
+  node_info: {
+    "/baseModel/backbone/stage1/stage1.1/final_conv/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage3/stage3.1/blocks.0/conv1/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/bottom_up_layers.0/blocks.2/conv1/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/bottom_up_layers.0/final_conv/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage3/stage3.1/blocks.5/conv2/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/reg_preds.1/reg_preds.1.2/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/reg_preds.2/reg_preds.2.2/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage3/stage3.1/blocks.2/conv1/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/reg_preds.0/reg_preds.0.0/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/proj_conv_8/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage3/stage3.1/blocks.4/conv1/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage3/stage3.1/blocks.5/conv1/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/reg_preds.1/reg_preds.1.1/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/bottom_up_layers.1/blocks.1/conv2/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage2/stage2.1/final_conv/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/downsample_layers.0/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/bottom_up_layers.0/blocks.2/conv2/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage2/stage2.1/blocks.2/conv1/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/top_down_layers.0/blocks.2/conv2/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/bottom_up_layers.1/final_conv/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/proj_conv_3/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/proj_conv_10/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/cls_contrasts.2/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/bottom_up_layers.0/blocks.0/conv1/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/bottom_up_layers.1/blocks.2/conv1/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/proj_conv_9/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage2/stage2.1/blocks.3/conv1/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/top_down_layers.1/blocks.2/conv2/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/cls_preds.0/cls_preds.0.2/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/bottom_up_layers.0/blocks.1/conv1/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/reg_preds.0/reg_preds.0.2/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/cls_preds.0/cls_preds.0.0/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/cls_contrasts.0/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/top_down_layers.0/blocks.2/conv1/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/bottom_up_layers.1/blocks.2/conv2/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/proj_conv_1/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/bottom_up_layers.1/blocks.0/conv2/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/proj_conv_5/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/top_down_layers.0/blocks.0/conv1/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage1/stage1.1/blocks.1/conv2/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/cls_preds.0/cls_preds.0.1/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/proj_conv_7/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage4/stage4.1/blocks.1/conv1/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/proj_conv_4/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/cls_preds.1/cls_preds.1.1/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/proj_conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage1/stage1.1/blocks.0/conv2/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/bottom_up_layers.0/blocks.1/conv2/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage2/stage2.1/blocks.1/conv2/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/proj_conv_11/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage2/stage2.1/blocks.5/conv1/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/cls_contrasts.1/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/top_down_layers.0/blocks.1/conv1/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/reg_preds.0/reg_preds.0.1/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage2/stage2.1/blocks.4/conv2/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/top_down_layers.1/blocks.2/conv1/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage4/stage4.1/main_conv/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage3/stage3.1/blocks.0/conv2/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/proj_conv_6/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/proj_conv_2/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/bottom_up_layers.0/blocks.0/conv2/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/reg_preds.2/reg_preds.2.1/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage1/stage1.1/blocks.1/conv1/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/bottom_up_layers.1/blocks.0/conv1/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage4/stage4.1/blocks.2/conv2/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage4/stage4.1/blocks.2/conv1/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/cls_preds.1/cls_preds.1.2/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage3/stage3.1/blocks.3/conv2/conv/Conv": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/bottom_up_layers.0/blocks.2/conv1/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage2/stage2.1/blocks.2/conv1/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_7_reducemax_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage2/stage2.1/Concat": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Slice_11": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_10_sub_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_11_sub_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Slice_3": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/top_down_layers.0/main_conv/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage2/stage2.1/blocks.4/Add": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage4/stage4.2/poolings_1/MaxPool": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_1_exp_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Slice_9": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_3_sub_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage2/stage2.1/blocks.2/conv2/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/Reshape_7": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/bottom_up_layers.0/blocks.1/conv1/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage3/stage3.1/Split": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/top_down_layers.0/Split": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/Concat": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/downsample_layers.1/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/Sub_1": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/bottom_up_layers.1/blocks.2/conv2/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/Gather_3": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_10_mul_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_8_reducesum_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_11_exp_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_5_reciprocal_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_mul_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_6_sub_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/bottom_up_layers.1/blocks.0/conv1/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Slice_6": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_9_reducemax_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/bottom_up_layers.1/blocks.1/conv1/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/top_down_layers.0/blocks.1/conv2/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Slice_2": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_2_sub_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/Transpose_5": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/Sub": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/cls_preds.1/cls_preds.1.0/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/Concat_5": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_8_reducemax_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Slice_7": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/Transpose_3": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage1/stage1.1/blocks.2/conv1/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/cls_preds.1/cls_preds.1.1/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage2/stage2.1/main_conv/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/Gather_5": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/Transpose_1": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage1/stage1.1/blocks.1/conv1/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_3_reducemax_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage4/stage4.2/poolings_2/MaxPool": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Slice_8": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_2_reciprocal_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_4_reciprocal_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_6_mul_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_4_reducemax_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/Transpose_4": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_8_mul_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_2_exp_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_5_reducesum_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage4/stage4.1/blocks.2/Add": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_6_reciprocal_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/Concat_6": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Slice_1": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_9_mul_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_7_reducesum_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_1_reducemax_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_4_exp_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/bottom_up_layers.0/blocks.0/conv2/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage4/stage4.0/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/bottom_up_layers.0/blocks.0/conv1/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/cls_preds.0/cls_preds.0.0/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage3/stage3.1/blocks.0/conv1/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_5_mul_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_7_exp_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/reg_preds.2/reg_preds.2.1/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_2_reducemax_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/top_down_layers.1/blocks.0/conv1/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/top_down_layers.1/blocks.0/conv2/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/reg_preds.0/reg_preds.0.0/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_4_mul_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage1/stage1.1/blocks.0/Add": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_7_mul_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/top_down_layers.1/blocks.2/conv1/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_6_reducesum_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_8_sub_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/bottom_up_layers.1/blocks.2/conv1/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Concat_1": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_1_reciprocal_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/Reshape_9": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_2_mul_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_9_exp_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_3_mul_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_3_reciprocal_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/Add_1": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_9_reciprocal_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_9_sub_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_11_reducesum_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/bottom_up_layers.1/Split": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_9_reducesum_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_5_sub_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/reg_preds.2/reg_preds.2.0/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_4_reducesum_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/top_down_layers.0/blocks.0/conv1/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/Gather_4": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage3/stage3.1/blocks.3/Add": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage2/stage2.1/blocks.3/conv2/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_3_exp_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage2/stage2.1/Split": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/Gather_1": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_6_exp_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_reciprocal_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_2_reducesum_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/cls_preds.0/cls_preds.0.1/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_reducemax_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage3/stage3.1/blocks.5/Add": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_5_exp_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_8_exp_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_7_reciprocal_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage3/stage3.1/blocks.2/conv2/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/Reshape_6": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_1_sub_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_1_reducesum_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Slice": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_11_mul_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Slice_10": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Concat": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_exp_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/reg_preds.1/reg_preds.1.0/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage2/stage2.1/blocks.3/conv1/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage4/stage4.2/poolings/MaxPool": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_4_sub_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_10_exp_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage4/stage4.2/Concat": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_10_reciprocal_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_7_sub_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage2/stage2.1/blocks.1/Add": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Slice_5": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_10_reducemax_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_1_mul_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage2/stage2.1/blocks.3/Add": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_11_reducemax_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/top_down_layers.1/Concat": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/Add": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_sub_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_3_reducesum_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage4/stage4.1/final_conv/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_6_reducemax_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage4/stage4.1/blocks.1/conv2/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage3/stage3.1/blocks.2/Add": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage3/stage3.1/blocks.5/conv1/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/reg_preds.1/reg_preds.1.1/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_reducesum_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/Reshape_11": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/top_down_layers.1/Split": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_11_reciprocal_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_10_reducesum_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage2/stage2.1/blocks.4/conv2/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/Transpose": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Slice_4": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_5_reducemax_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/backbone/stage1/stage1.1/Split": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/reg_preds.0/reg_preds.0.1/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Softmax_8_reciprocal_FROM_QUANTIZED_SOFTMAX": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/Reshape_10": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/neck/top_down_layers.0/final_conv/activate/Mul": {
+        "ON": "BPU",
+        "InputType": "int8"
+    },
+    "/baseModel/head_module/Concat_2": {
+        "ON": "BPU",
+        "InputType": "int8"
+    }
+  }
+ 
+input_parameters:
+  input_name: 'images'
+  input_type_train: 'yuv444'
+  input_layout_train: 'NCHW'
+  input_shape: '1x3x672x896'
+  input_batch: 1
+  norm_type: 'data_scale'
+  mean_value: ''
+  scale_value: 0.003921568627451
+  input_layout_rt: 'NHWC'
+  input_type_rt: 'nv12'
+
+
+# 校准参数组
+calibration_parameters:
+  cal_data_dir: '/home/fa.fu/work/work_dirs/d-robotics/dosod/calibration_data/calibration_images_1205_v1_rgb_nv12_672×896'
+  cal_data_type: 'float32'
+  preprocess_on: False
+  # calibration_type: 'default'
+  calibration_type: 'max'
+  max_percentile: 0.99995
+  optimization: 'set_all_nodes_int16'
+  
+
+compiler_parameters:
+  compile_mode: 'latency'
+  debug: False
+  optimize_level: 'O3'
+  jobs: 32
