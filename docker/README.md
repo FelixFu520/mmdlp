@@ -31,3 +31,19 @@ docker run -itd \
     -w /root/mmdlp \
     fusimeng/anaconda:cu116
 ```
+
+## yoloworld
+```
+docker build -f ./yoloworld.dockerfile -t fusimeng/mmdlp:yoloworld_v1 .
+
+docker run -itd \
+    --name u00001 \
+    -v /data/u00001:/root/data \
+	-v /data/public:/root/public \
+    -v /home/felix/work/mmdlp:/root/mmdlp \
+    --shm-size 128G \
+    --gpus all \
+    --privileged=true \
+    -w /root/mmdlp \
+    fusimeng/mmdlp:yoloworld_v1
+```
