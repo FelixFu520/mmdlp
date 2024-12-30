@@ -332,13 +332,14 @@ if __name__ == "__main__":
     parser.add_argument('--save_pickle_path', type=str, default="")
     args = parser.parse_args()
 
-    classes = (
-                'liquid stain',
-                'congee stain',
-                'milk stain',
-                'skein',
-                'solid stain',
-    )
+    # classes = (
+    #             'liquid stain',
+    #             'congee stain',
+    #             'milk stain',
+    #             'skein',
+    #             'solid stain',
+    # )
+    classes = "water stain;colored stain;white stain;ketchup stain;mixed stain;solid stain;skein".split(";")
     # Define image scale
     img_scale = (args.width, args.height)  
 
